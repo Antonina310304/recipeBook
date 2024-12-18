@@ -1,0 +1,705 @@
+openapi: 3.0.0
+info:
+  description: апи для приложения
+  version: "1.1.0"
+  title:  "Книга рецептов"
+externalDocs:
+  description: Find out more about Swagger
+  url: http://swagger.io
+servers:
+  - url: https://localhost:3000
+tags:
+  - name: auth
+    description: Авторизация и регистрация пользователя
+paths:
+  /auth:
+    post:
+      tags:
+        - auth
+      summary: Авторизация пользователя
+      description: Авторизация пользователя
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserAuth"
+      responses:
+        '204':
+          description: Успешный ввод почты/пароля. На почту отправлен код подтверждения
+        '400':
+          description: Неверно введен пароль
+        '500':
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+          
+  /user:
+    get:
+      tags:
+        - user
+      summary: получение полной информации об авторизованном пользователе 
+      description: получение полной информации об авторизованном пользователе
+      responses:
+        '200':
+          description: Успешная авторизация
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserInfo"
+        '500':
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+        '400':
+          description: Некорретный код подтверждения
+  /users:
+    get:
+      tags:
+        - user
+      summary: получение публичной информации о всех пользователях
+      description: получение публичной информации о всех пользователях
+      responses:
+        '200':
+          description: Успешная авторизация
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/PublicUserInfo"
+        '500':
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+        '400':
+          description: Некорретный код подтверждения
+  /auth/refresh:
+    get:
+      tags:
+        - auth
+      summary: Обновление токена авторизации
+      description: Обновление токена авторизации
+      responses:
+        '204':
+          description: Успешное обновление токена
+        '400':
+          description: Невалидный refresh токен
+        '500':
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+          
+  /user/registration:
+    post:
+      tags:
+        - user
+      summary: Регистрация пользователя
+      description: Регистрация пользователя
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UserRegistration"
+      operationId: findPetsByTags
+      responses:
+        '204':
+          description: Успешный запрос на регистрацию
+        '500':
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+  /auth/сonfirm-code:
+    post:
+      tags:
+        - auth
+      summary: введение кода авторизации
+      description: введение кода авторизации для авторизации
+      requestBody: 
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/ConfirmCode"
+      responses:
+        '200':
+          description: Успешная авторизация
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/UserInfo"
+        '500':
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+        '400':
+          description: Некорретный код подтверждения
+        
+  /logout:
+    post:
+      tags:
+        - auth
+      summary: Выйти
+      description: 'Выйти'
+      responses:
+        '204':
+          description: Успешный выход из системы
+        '500':
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+  /guide/cuisines:
+    get:
+      tags:
+        - guide
+      summary: Cписок кухонь мира
+      description: Возвращает список кухонь мира
+      operationId: getInventory
+      responses:
+        '200':
+          description: Список кухонь
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/CuisinesList"
+        '500':
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+  /guide/products:
+    get:
+      tags:
+        - guide
+      summary: Список продуктов
+      description: Возвращает список продуктов
+      operationId: placeOrder
+      responses:
+        '200':
+          description: Список продуктов
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ProductsList"
+        '500':
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+  /recipes:
+    get:
+      tags:
+        - recipes
+      summary: Получить список рецептов
+      description: Получение всех списков рецептов.
+      parameters:
+        - $ref: "#/components/parameters/author"
+        - $ref: "#/components/parameters/cuisines"
+        - $ref: "#/components/parameters/since"
+        - $ref: "#/components/parameters/until"
+        - $ref: "#/components/parameters/page"
+      responses:
+        '200':
+          description: Получение списка рецептов
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecipyResponseBody"
+        '500':
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+    post:
+      tags:
+        - recipes
+      summary: Создать рецепт
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateRecipeBody"
+      responses:
+        '200':
+          description: Изменение рецепта
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecipyFullDataItem"
+        '401':
+          description: Пользователь не авторизован
+        '500':
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+  /search:
+    get:
+      tags:
+        - search
+      summary: Найти
+      description: Найти по строке
+      parameters:
+        - $ref: "#/components/parameters/searchString"
+        - $ref: "#/components/parameters/page"
+      responses:
+        '200':
+          description: Получение списка рецептов
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecipyResponseBody"
+        '500':
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+  "/recipes/{uuid}":
+    get:
+      operationId: getConstructionObjectsAl
+      tags:
+        - recipes
+      summary: Получить рецепт по uuid
+      parameters:
+        - name: uuid
+          in: path
+          description: Uuid рецепта
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: successfulуспешный запрос
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecipyResponseBody"
+        '404':
+          description: Рецепт не найден
+        '500':
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+    put:
+      tags:
+        - recipes
+      summary: Изменить рецепт
+      operationId: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/UpdateRecipeBody"
+      parameters:
+        - name: uuid
+          in: path
+          description: Uuid рецепта для изменения
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Изменение рецепта
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecipyFullDataItem"
+        '401':
+          description: Пользователь не авторизован
+        '404':
+          description: Рецепт не найден
+        '500':
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+    delete:
+      tags:
+        - recipes
+      summary: Удалить рецепт по uuid
+      description: Удалить рецепт по его Uuid
+      parameters:
+        - name: uuid
+          in: path
+          description: ID рецепта, который нужно удалить
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Рецепт удален
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/RecipyFullDataItem"
+        '401':
+          description: Пользователь не авторизован
+        '404':
+          description: Рецепт не найден
+        '500':
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+  /recipes/all:
+    delete:
+      tags:
+        - recipes
+      summary: Удалить все рецепты
+      description: Удалить все рецепты пользователя
+      responses:
+        '204':
+          description: Все рецепты удалены
+        '401':
+          description: Пользователь не авторизован
+        '404':
+          description: Рецепт не найден
+        '500':
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+
+  /notifications:
+    put:
+      tags: 
+        - notifications
+      summary: Обновить подписки пользователя
+      description: Обновить подписки пользователя
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/NotificationsBody"
+      responses:
+        '204':
+          description: Подписки успешно обновлены
+        '401':
+          description: Пользователь не авторизован
+        '500':
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+    get:
+      tags:
+        - notifications
+      summary: Получить уведомления 
+      description: Получение всех списков рецептов.
+      parameters:
+        - $ref: "#/components/parameters/status"
+        - $ref: "#/components/parameters/page"
+      responses:
+        '200':
+          description: Получение списка рецептов
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/NotificationsMessage"
+        '500':
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+  /subscriptions/authors/{uuid}:
+    post:
+      tags: 
+        - subscriptions
+      summary: Подписаться на автора
+      description: Подписаться на автора
+      parameters:
+        - $ref: "#/components/parameters/authorUuid"
+      responses:
+        '204':
+          description: Подписки успешно обновлены
+        '401':
+          description: Пользователь не авторизован
+        '500':
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+    delete:
+      tags: 
+        - subscriptions
+      summary: Отписаться от автора
+      description: Отписаться от автора
+      parameters:
+        - $ref: "#/components/parameters/authorUuid"
+      responses:
+        '204':
+          description: Подписки успешно обновлены
+        '401':
+          description: Пользователь не авторизован
+        '500':
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+  /subscribes/cuisines/{uuid}:
+    post:
+      tags: 
+        - subscriptions
+      summary: Подписаться на кухню
+      description: Подписаться на кухню
+      parameters:
+        - $ref: "#/components/parameters/cuisinesUuid"
+      responses:
+        '204':
+          description: Пользователь успешно подписался на кухню
+        '401':
+          description: Пользователь не авторизован
+        '500':
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+    delete:
+      tags: 
+        - subscriptions
+      summary: Отписаться от кухни
+      description: Отписаться от кухни
+      parameters:
+        - $ref: "#/components/parameters/cuisinesUuid"
+      responses:
+        '204':
+          description: Обновлен список подписок пользователя
+        '401':
+          description: Пользователь не авторизован
+        '500':
+          description: Ошибка сервера
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorMessage"
+components:
+  schemas:
+    ProductItem:
+      description: "Игнидиет рецепта"
+      type: object
+      properties:
+        productUuid:
+          type: string
+        coutn:
+          type: number
+    RecipyResponseBody:
+      description: "Список показателей"
+      type: array
+      items:
+        $ref: "#/components/schemas/RecipyFullDataItem"
+    RecipyFullDataItem:
+      description: "Полный рецепт"
+      allOf:
+        - $ref: "#/components/schemas/RecipeCommonProperties"
+      properties:
+        uuid:
+          type: string
+        autorNickname:
+          type: string
+        autorUuid:
+          type: string
+    UpdateRecipeBody:
+      description: "Тело запроса на обновление рецепта"
+      allOf:
+        - $ref: "#/components/schemas/RecipeCommonProperties"
+    RecipeCommonProperties:
+      properties:
+        title:
+          type: string
+          description: "Название блюда"
+        description:
+          type: string
+          description: "Описание блюда"
+        cuisineUuid:
+          type: string
+          description: "uuid кухни"
+        products:
+          description: "список продуктов"
+          type: array
+          items:
+            $ref: "#/components/schemas/ProductItem"
+    UserAuth:
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+    UserRegistration:
+      properties:
+        email:
+          type: string
+        nickname:
+          type: string
+        password:
+          type: string
+    ConfirmCode:
+      properties:
+        code:
+          type: string
+    CuisinesList:
+      properties:
+        title: 
+          type: string
+        uuid: 
+          type: string
+    ProductsList:
+      properties:
+        title: 
+          type: string
+        uuid: 
+          type: string
+        unit:
+          type: string
+    PublicUserInfo:
+      properties:
+        dateRegistrate: 
+          type: string
+        nickname:
+          type: string
+    UserInfo:
+      properties:
+        uuid:
+          type: string
+        email:
+          type: string
+        name:
+          type: string
+        allOf:
+          $ref: "#/components/schemas/PublicUserInfo"
+    NotificationsBody:
+      properties:
+        emailNotification:
+          type: boolean
+        portallNotification:
+          type: boolean
+    ErrorMessage:
+      properties:
+        status: 
+          type: string
+          enum: [error]
+        message:
+          type: string
+    NotificationsMessage:
+      description: "Список уведомлений пользователя"
+      type: array
+      items:
+        $ref: "#/components/schemas/NotificationsMessageItem"
+    NotificationsMessageItem:
+      properties:
+        pecipeUuid:
+          type: string
+        title:
+          type: string
+        description: 
+          type: string
+        parsed:
+          type: boolean
+          
+  parameters:
+    searchString:
+      name: searchString
+      description: "Строка для поиска"
+      in: query
+      required: false
+      schema:
+        type: string
+        format: string
+    author:
+      name: author
+      in: query
+      description: "uuid автора"
+      required: false
+      schema:
+        type: string
+        format: string
+    authorUuid:
+      name: uuid
+      in: path
+      description: "uuid автора"
+      required: true
+      schema:
+        type: string
+        format: string
+    cuisines:
+      name: cuisines
+      description: "кухня"
+      in: query
+      required: false
+      schema:
+        type: array
+        items:
+          type: string
+    cuisinesUuid:
+      name: uuid
+      in: path
+      description: "uuid кухни"
+      required: true
+      schema:
+        type: string
+        format: string
+    since:
+      name: since
+      description: "дата создания от"
+      in: query
+      required: false
+      schema:
+        type: string
+        format: string
+    until:
+      name: until
+      in: query
+      description: "дата создания до"
+      required: false
+      schema:
+        type: string
+        format: string       
+    page:
+      name: page
+      in: query
+      description: "номер страницы"
+      required: false
+      schema:
+        type: string
+        format: string
+    status:
+      name: status
+      in: query
+      description: "статус уведомлений"
+      required: false
+      schema:
+        type: string
+        enum: ['all', 'new']
+
+      
+          
+            
+          
