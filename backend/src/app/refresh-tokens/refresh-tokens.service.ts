@@ -7,6 +7,6 @@ import {RefreshTokensEntity} from "../../common/entities/refresh-tokens.entity";
 export class RefreshTokensService {
     constructor(
         @InjectRepository(RefreshTokensEntity)
-        private recipeEventsEntityRepository: Repository<RefreshTokensEntity>,
+        private refreshTokensRepository: Repository<RefreshTokensEntity>,
     ) {}
 }

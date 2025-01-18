@@ -7,6 +7,6 @@ import {RecipeEventsEntity} from "../../common/entities/recipe-events.entity";
 export class RecipeEventsService {
     constructor(
         @InjectRepository(RecipeEventsEntity)
-        private recipeEventsEntityRepository: Repository<RecipeEventsEntity>,
+        private recipeEventsRepository: Repository<RecipeEventsEntity>,
     ) {}
 }
