@@ -1,7 +1,8 @@
 import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import {TypeOrmModule} from "@nestjs/typeorm";
+import { TypeOrmModule } from "@nestjs/typeorm";
+import { resolve } from "path";
 
 @Module({
   imports: [
@@ -13,8 +14,10 @@ import {TypeOrmModule} from "@nestjs/typeorm";
       password: 'postgres',
       database: 'postgres',
       entities: [],
-      synchronize: true,
-    }),
+      migrations: [resolve(__dirname, "database", "migrations", "**", "*")],
+      synchronize: false,
+      migrationsRun: true,
+    })
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -19,10 +19,12 @@ services:
     working_dir: /app
     volumes:
       - ./backend:/app/backend:cached
+    user: "1000"
     command:
       - sh
       - -c
       - |
+        apt install procps
         cd backend
         npm i
         npm run start:dev
