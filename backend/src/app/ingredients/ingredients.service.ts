@@ -7,6 +7,6 @@ import {IngredientsEntity} from "../../common/entities/ingredients.entity";
 export class IngredientsService {
     constructor(
         @InjectRepository(IngredientsEntity)
-        private authCodeRepository: Repository<IngredientsEntity>,
+        private ingredientsRepository: Repository<IngredientsEntity>,
     ) {}
 }
