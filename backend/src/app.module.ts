@@ -1,8 +1,7 @@
 import { Module } from '@nestjs/common';
-import { AppController } from './app.controller';
-import { AppService } from './app.service';
 import { TypeOrmModule } from "@nestjs/typeorm";
 import { resolve } from "path";
+import {ApiRecipesModule} from "./app/api-recipes/api-recipes.module";
 
 @Module({
   imports: [
@@ -17,9 +16,11 @@ import { resolve } from "path";
       migrations: [resolve(__dirname, "database", "migrations", "**", "*")],
       synchronize: false,
       migrationsRun: true,
-    })
+      logging: true
+    }),
+    ApiRecipesModule
   ],
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [],
+  providers: [],
 })
 export class AppModule {}
