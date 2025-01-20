@@ -91,10 +91,10 @@ export class RecipesRepository extends Repository<RecipesEntity> {
     }
 
     if (condition?.dateInterval?.since) {
-      where.push(`dateCreate >= '${condition.dateInterval.since}'::date`);
+      where.push(`date_create >= '${condition.dateInterval.since}'::timestamptz`);
     }
     if (condition?.dateInterval?.until) {
-      where.push(`dateCreate <' ${condition.dateInterval.until}'::date`);
+      where.push(`date_create <' ${condition.dateInterval.until}'::timestamptz`);
     }
     return where;
   }
