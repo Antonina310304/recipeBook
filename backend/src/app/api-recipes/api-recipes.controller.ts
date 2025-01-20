@@ -39,4 +39,17 @@ export class ApiRecipesController {
       CommonErrorBuilder.makeError(e as Error, response);
     }
   }
+
+  @Get(`/:uuid`)
+  async getRecipeByUuid(
+    @Param("uuid") uuid: string,
+    @Res() response: Response<RecipeListInterface | BaseErrorInterface>
+  ): Promise<void> {
+    try {
+      const res: RecipeListInterface = await this.apiRecipesService.getRecipe(uuid);
+      response.status(200).send(res);
+    } catch (e) {
+      CommonErrorBuilder.makeError(e as Error, response);
+    }
+  }
 }

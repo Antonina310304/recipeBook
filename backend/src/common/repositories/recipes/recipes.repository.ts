@@ -17,6 +17,24 @@ export class RecipesRepository extends Repository<RecipesEntity> {
     super(RecipesEntity, manager);
   }
 
+  async findByUuid(uuid: string): Promise<RecipesResponseInterface[]> {
+    return await this.manager.query<RecipesResponseInterface[]>(`
+      SELECT 
+        title,
+        description,
+        kitchen_uuid as "kitchenUuid",
+        r.uuid,
+        user_uuid as "authorUuid",
+        nickname as "authorNickname",
+        i.product_uuid as "productUuid",
+        i.count as "count"
+      FROM ${this.tableName} AS r
+      LEFT JOIN ingredients AS i ON r.uuid = i.recipe_uuid
+      LEFT JOIN users AS u ON r.user_uuid = u.uuid
+      WHERE r.uuid = '${uuid}';
+    `);
+  }
+
   async findByCondition(condition: RecipesByPageCondition): Promise<RecipesResponseInterface[]> {
     const where: string[] = this.getWhere({
       authorUuid: condition.authorUuid,

@@ -30,4 +30,13 @@ export class ApiRecipesService {
 
     return new PageDto(response, pageMetaDto);
   }
+
+  async getRecipe(uuid: string): Promise<RecipeListInterface> {
+    const entity: RecipesResponseInterface[] = await this.recipesService.findByUuid(uuid);
+
+    const response: RecipeListInterface[] = [];
+    this.apiRecipesMapper.mapRecipes(entity, response);
+
+    return response[0];
+  }
 }
