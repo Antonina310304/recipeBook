@@ -1,8 +1,8 @@
 export interface PageMetaDtoParameters {
-    pageOptionsDto: PageOptionsDto;
-    itemCount: number;
+  pageOptionsDto: PageOptionsDto;
+  itemCount: number;
 }
 export interface PageOptionsDto {
-    page: number;
-    take: number;
+  page: number;
+  take: number;
 }

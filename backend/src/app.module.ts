@@ -1,17 +1,19 @@
-import { Module } from '@nestjs/common';
-import { TypeOrmModule } from "@nestjs/typeorm";
 import { resolve } from "path";
-import {ApiRecipesModule} from "./app/api-recipes/api-recipes.module";
+
+import { Module } from "@nestjs/common";
+import { TypeOrmModule } from "@nestjs/typeorm";
+
+import { ApiRecipesModule } from "./app/api-recipes/api-recipes.module";
 
 @Module({
   imports: [
     TypeOrmModule.forRoot({
-      type: 'postgres',
-      host: 'db',
+      type: "postgres",
+      host: "db",
       port: 5432,
-      username: 'postgres',
-      password: 'postgres',
-      database: 'postgres',
+      username: "postgres",
+      password: "postgres",
+      database: "postgres",
       entities: [],
       migrations: [resolve(__dirname, "database", "migrations", "**", "*")],
       synchronize: false,
@@ -21,6 +23,6 @@ import {ApiRecipesModule} from "./app/api-recipes/api-recipes.module";
     ApiRecipesModule
   ],
   controllers: [],
-  providers: [],
+  providers: []
 })
 export class AppModule {}

@@ -1,17 +1,17 @@
-import {IsArray} from "class-validator";
-import {Type} from "class-transformer";
-import {PageMetaDto} from "../page-meta/page-meta.dto";
+import { IsArray } from "class-validator";
+import { Type } from "class-transformer";
 
+import { PageMetaDto } from "../page-meta/page-meta.dto";
 
 export class PageDto<T> {
-    @IsArray()
-    readonly data: T[];
+  @IsArray()
+  readonly data: T[];
 
-    @Type(() => PageMetaDto )
-    readonly meta: PageMetaDto;
+  @Type(() => PageMetaDto)
+  readonly meta: PageMetaDto;
 
-    constructor(data: T[], meta: PageMetaDto) {
-        this.data = data;
-        this.meta = meta;
-    }
+  constructor(data: T[], meta: PageMetaDto) {
+    this.data = data;
+    this.meta = meta;
+  }
 }
