@@ -1,11 +1,11 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
 export class CreateTableUsers1737051191175 implements MigrationInterface {
-    private tableName: string = "users";
+  private tableName: string = "users";
 
-    public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(
-            `CREATE TABLE ${this.tableName}
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(
+      `CREATE TABLE ${this.tableName}
              (
                  uuid uuid DEFAULT uuid_generate_v4(),
                  nickname varchar NOT NULL,
@@ -15,11 +15,10 @@ export class CreateTableUsers1737051191175 implements MigrationInterface {
                  CONSTRAINT PK_users PRIMARY KEY (uuid),
                  UNIQUE (user_email)
              );`
-        );
-    }
+    );
+  }
 
-    public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.dropTable(this.tableName);
-    }
-
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.dropTable(this.tableName);
+  }
 }

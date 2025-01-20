@@ -1,12 +1,13 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { Repository } from "typeorm";
-import {RefreshTokensEntity} from "../../common/entities/refresh-tokens.entity";
+
+import { RefreshTokensEntity } from "../../common/entities/refresh-tokens.entity";
 
 @Injectable()
 export class RefreshTokensService {
-    constructor(
-        @InjectRepository(RefreshTokensEntity)
-        private refreshTokensRepository: Repository<RefreshTokensEntity>,
-    ) {}
+  constructor(
+    @InjectRepository(RefreshTokensEntity)
+    private refreshTokensRepository: Repository<RefreshTokensEntity>
+  ) {}
 }
