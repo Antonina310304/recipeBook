@@ -4,6 +4,7 @@ import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
 import { ApiRecipesModule } from "./app/api-recipes/api-recipes.module";
+import { ApiGuideModule } from "./app/api-guide/api-guide.module";
 
 @Module({
   imports: [
@@ -20,7 +21,8 @@ import { ApiRecipesModule } from "./app/api-recipes/api-recipes.module";
       migrationsRun: true,
       logging: true
     }),
-    ApiRecipesModule
+    ApiRecipesModule,
+    ApiGuideModule
   ],
   controllers: [],
   providers: []
