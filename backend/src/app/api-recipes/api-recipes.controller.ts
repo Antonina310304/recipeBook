@@ -14,12 +14,12 @@ export class ApiRecipesController {
   constructor(private readonly apiRecipesService: ApiRecipesService) {}
 
   @Get()
-  async getHello(
-    @Param("author") author: string,
-    @Param("kitchen") kitchen: string,
-    @Param("since") since: string,
-    @Param("until") until: string,
-    @Param("page") page: string,
+  async getRecipeList(
+    @Query("author") author: string,
+    @Query("kitchen") kitchen: string,
+    @Query("since") since: string,
+    @Query("until") until: string,
+    @Query("page") page: string,
     @Res() response: Response<PageDto<RecipeListInterface> | BaseErrorInterface>
   ): Promise<void> {
     try {

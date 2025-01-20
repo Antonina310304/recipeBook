@@ -25,7 +25,7 @@ export class RecipesRepository extends Repository<RecipesEntity> {
     });
 
     return await this.manager.query<RecipesResponseInterface[]>(`
-     SELECT 
+      SELECT 
         title,
         description,
         kitchen_uuid as "kitchenUuid",
@@ -34,12 +34,13 @@ export class RecipesRepository extends Repository<RecipesEntity> {
         nickname as "authorNickname",
         i.product_uuid as "productUuid",
         i.count as "count"
-     FROM ${this.tableName} AS r
-     LEFT JOIN ingredients AS i ON r.uuid = i.recipe_uuid
-     LEFT JOIN users AS u ON r.user_uuid = u.uuid
+      FROM ${this.tableName} AS r
+      LEFT JOIN ingredients AS i ON r.uuid = i.recipe_uuid
+      LEFT JOIN users AS u ON r.user_uuid = u.uuid
         ${where.length ? `WHERE ${where.join(" AND ")}` : ""}
-     LIMIT ${condition.take}
-     OFFSET ${condition.take * condition.page - 1};`);
+      LIMIT ${condition.take}
+      OFFSET ${condition.take * (condition.page - 1)};
+  `);
   }
 
   async getItemCount(condition: RecipesByPageCondition): Promise<number> {
@@ -49,11 +50,10 @@ export class RecipesRepository extends Repository<RecipesEntity> {
       dateInterval: condition.dateInterval
     });
     const itemCount: { count: number }[] = await this.manager.query(`
-            SELECT count(uuid) as count 
-            FROM ${this.tableName}
-            ${where.length ? `WHERE ${where.join(" AND ")}` : ""}; 
-        `);
-
+      SELECT count(uuid) as count 
+      FROM ${this.tableName}
+      ${where.length ? `WHERE ${where.join(" AND ")}` : ""}; 
+    `);
     return Number(itemCount[0].count);
   }
 
@@ -61,22 +61,22 @@ export class RecipesRepository extends Repository<RecipesEntity> {
     const where: string[] = [];
 
     if (condition.uuid) {
-      where.push(`uuid = ${condition.uuid}`);
+      where.push(`uuid = '${condition.uuid}'`);
     }
 
     if (condition.authorUuid) {
-      where.push(`user_uuid = ${condition.authorUuid}`);
+      where.push(`user_uuid = '${condition.authorUuid}'`);
     }
 
     if (condition.kitchenUuid) {
-      where.push(`kitchen_uuid = ${condition.authorUuid}`);
+      where.push(`kitchen_uuid = '${condition.kitchenUuid}'`);
     }
 
     if (condition?.dateInterval?.since) {
-      where.push(`dateCreate >= ${condition.dateInterval.since}`);
+      where.push(`dateCreate >= '${condition.dateInterval.since}'::date`);
     }
     if (condition?.dateInterval?.until) {
-      where.push(`dateCreate < ${condition.dateInterval.since}`);
+      where.push(`dateCreate <' ${condition.dateInterval.until}'::date`);
     }
     return where;
   }

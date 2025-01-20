@@ -11,10 +11,17 @@ export class ApiRecipesMapper {
     const recipes: Record<string, RecipeListInterface> = {};
 
     source.forEach((recipesItem) => {
-      ingredients[recipesItem.uuid].push({
-        productUuid: recipesItem.productUuid,
-        count: recipesItem.count
-      });
+      if (!ingredients[recipesItem.uuid]) {
+        ingredients[recipesItem.uuid] = [];
+      }
+
+      if (recipesItem.productUuid) {
+        ingredients[recipesItem.uuid].push({
+          productUuid: recipesItem.productUuid,
+          count: recipesItem.count
+        });
+      }
+
       recipes[recipesItem.uuid] = {
         authorNickname: recipesItem.authorNickname,
         title: recipesItem.title,
@@ -25,6 +32,7 @@ export class ApiRecipesMapper {
         products: ingredients[recipesItem.uuid]
       };
     });
-    destination.push(...Object.values(recipes));
+
+    destination.push(...(Object.values(recipes) ?? []));
   }
 }
