@@ -1,11 +1,11 @@
 import { MigrationInterface, QueryRunner } from "typeorm";
 
 export class CreateTableSubscriptionsKitchen1737135408406 implements MigrationInterface {
-    private tableName: string = "subscriptions_kitchen";
+  private tableName: string = "subscriptions_kitchen";
 
-    public async up(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.query(
-            `CREATE TABLE ${this.tableName}
+  public async up(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(
+      `CREATE TABLE ${this.tableName}
              (
                  user_uuid uuid NOT NULL,
                  kitchen_uuid uuid NOT NULL,
@@ -14,10 +14,10 @@ export class CreateTableSubscriptionsKitchen1737135408406 implements MigrationIn
                  CONSTRAINT FK_subscriptions_kitchen_kitchen_uuid FOREIGN KEY (kitchen_uuid) REFERENCES kitchens(uuid)
 
              );`
-        );
-    }
+    );
+  }
 
-    public async down(queryRunner: QueryRunner): Promise<void> {
-        await queryRunner.dropTable(this.tableName);
-    }
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.dropTable(this.tableName);
+  }
 }
