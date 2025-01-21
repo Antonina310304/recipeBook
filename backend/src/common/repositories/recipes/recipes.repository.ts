@@ -25,6 +25,7 @@ export class RecipesRepository extends Repository<RecipesEntity> {
         kitchen_uuid as "kitchenUuid",
         r.uuid,
         user_uuid as "authorUuid",
+        date_create as "dateCreate",
         nickname as "authorNickname",
         i.product_uuid as "productUuid",
         i.count as "count"
