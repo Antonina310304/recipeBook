@@ -1,0 +1,33 @@
+services:
+  db:
+    image: postgres:17.0
+    restart: always
+    shm_size: 128mb
+    volumes:
+      - ./database/initdb:/docker-entrypoint-initdb.d
+      - ./database/data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5432:5432
+
+  backend:
+    build:
+      dockerfile: ./Dockerfile_Backend
+    image: node_ssl:20.18-slim
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    restart: always
+    working_dir: /app
+    volumes:
+      - ./backend:/app/backend:cached
+    user: "1000"
+    command:
+      - sh
+      - -c
+      - |
+        cd backend
+        npm i
+        npm run start:dev
+    ports:
+      - 3000:3000
