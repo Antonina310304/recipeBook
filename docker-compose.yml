@@ -12,6 +12,8 @@ services:
       - 5432:5432
 
   backend:
+    build:
+      dockerfile: ./Dockerfile_Backend
     image: node_ssl:20.18-slim
     stdin_open: true # docker run -i
     tty: true        # docker run -t
@@ -24,7 +26,6 @@ services:
       - sh
       - -c
       - |
-        apt install procps
         cd backend
         npm i
         npm run start:dev
