@@ -160,7 +160,7 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorMessage"
-  /guide/cuisines:
+  /guide/kithens:
     get:
       tags:
         - guide
@@ -173,7 +173,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/CuisinesList"
+                $ref: "#/components/schemas/KitchensList"
         '500':
           description: Ошибка сервера
           content:
@@ -208,7 +208,7 @@ paths:
       description: Получение всех списков рецептов.
       parameters:
         - $ref: "#/components/parameters/author"
-        - $ref: "#/components/parameters/cuisines"
+        - $ref: "#/components/parameters/kitchen"
         - $ref: "#/components/parameters/since"
         - $ref: "#/components/parameters/until"
         - $ref: "#/components/parameters/page"
@@ -264,7 +264,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/RecipyResponseBody"
+                $ref: "#/components/schemas/RecipeResponseBody"
         '500':
           description: Ошибка сервера
           content:
@@ -286,11 +286,11 @@ paths:
             type: string
       responses:
         '200':
-          description: successfulуспешный запрос
+          description: успешный запрос
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/RecipyResponseBody"
+                $ref: "#/components/schemas/RecipeResponseBody"
         '404':
           description: Рецепт не найден
         '500':
@@ -464,14 +464,14 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorMessage"
-  /subscribes/cuisines/{uuid}:
+  /subscribes/kithcens/{uuid}:
     post:
       tags: 
         - subscriptions
       summary: Подписаться на кухню
       description: Подписаться на кухню
       parameters:
-        - $ref: "#/components/parameters/cuisinesUuid"
+        - $ref: "#/components/parameters/kitchenUuid"
       responses:
         '204':
           description: Пользователь успешно подписался на кухню
@@ -489,7 +489,7 @@ paths:
       summary: Отписаться от кухни
       description: Отписаться от кухни
       parameters:
-        - $ref: "#/components/parameters/cuisinesUuid"
+        - $ref: "#/components/parameters/kitchenUuid"
       responses:
         '204':
           description: Обновлен список подписок пользователя
@@ -539,9 +539,12 @@ components:
         description:
           type: string
           description: "Описание блюда"
-        cuisineUuid:
+        kitchenUuid:
           type: string
           description: "uuid кухни"
+        dateCreate:
+          type: string
+          description: "Дата создания рецепта"
         products:
           description: "список продуктов"
           type: array
@@ -565,7 +568,7 @@ components:
       properties:
         code:
           type: string
-    CuisinesList:
+    kitchenList:
       properties:
         title: 
           type: string
@@ -649,16 +652,15 @@ components:
       schema:
         type: string
         format: string
-    cuisines:
-      name: cuisines
+    kitchen:
+      name: kitchen
       description: "кухня"
       in: query
       required: false
       schema:
-        type: array
-        items:
-          type: string
-    cuisinesUuid:
+        type: string
+        format: string
+    kitchenUuid:
       name: uuid
       in: path
       description: "uuid кухни"
