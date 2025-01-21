@@ -26,6 +26,7 @@ export class ApiRecipesMapper {
         authorNickname: recipesItem.authorNickname,
         title: recipesItem.title,
         description: recipesItem.description,
+        dateCreate: recipesItem.dateCreate,
         kitchenUuid: recipesItem.kitchenUuid,
         uuid: recipesItem.uuid,
         authorUuid: recipesItem.authorUuid,
