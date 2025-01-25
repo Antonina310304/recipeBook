@@ -27,7 +27,7 @@ export class TokenService {
     };
   }
 
-  validateAccessToken(token: string): JwtPayload | string | null {
+  validateToken(token: string): JwtPayload | string | null {
     const secret: string = this.configService.accessSecret;
     try {
       return verify(token, secret);
@@ -43,5 +43,9 @@ export class TokenService {
   async saveRefreshToken(userUuid: string, refreshToken: string): Promise<string> {
     const entity: RefreshTokensEntity = await this.refreshTokensRepository.save({ userUuid, token: refreshToken });
     return entity.token;
+  }
+
+  async findByDb(refreshToken: string): Promise<RefreshTokensEntity | undefined> {
+    return await this.refreshTokensRepository.findByToken(refreshToken);
   }
 }

@@ -4,7 +4,7 @@ import { Query } from "@nestjs/common/decorators/http/route-params.decorator";
 
 import { PageDto } from "../../../common/dto/page-dto/page.dto";
 import { CommonErrorBuilder } from "../../../common/common-error-builder/common-error-builder";
-import { BaseErrorInterface } from "../../../common/types";
+import { ErrorDescription } from "../../../common/common-error-builder/types";
 
 import { ApiRecipesService } from "./api-recipes.service";
 import { RecipeListInterface } from "./types";
@@ -21,7 +21,7 @@ export class ApiRecipesController {
     @Query("since") since: string,
     @Query("until") until: string,
     @Query("page") page: string,
-    @Res() response: Response<PageDto<RecipeListInterface> | BaseErrorInterface>
+    @Res() response: Response<PageDto<RecipeListInterface> | ErrorDescription>
   ): Promise<void> {
     try {
       const res: PageDto<RecipeListInterface> = await this.apiRecipesService.getRecipes({
@@ -43,7 +43,7 @@ export class ApiRecipesController {
   @Get(`/:uuid`)
   async getRecipeByUuid(
     @Param("uuid") uuid: string,
-    @Res() response: Response<RecipeListInterface | BaseErrorInterface>
+    @Res() response: Response<RecipeListInterface | ErrorDescription>
   ): Promise<void> {
     try {
       const res: RecipeListInterface = await this.apiRecipesService.getRecipe(uuid);

@@ -5,6 +5,8 @@ import { EntityManager, Repository } from "typeorm";
 import { UsersEntity } from "../../entities/users.entity";
 import { PublicUserInterface } from "../../../app/api/api-users/types";
 
+import { UserCondition } from "./types";
+
 @Injectable()
 export class UsersRepository extends Repository<UsersEntity> {
   @InjectRepository(UsersEntity)
@@ -26,7 +28,31 @@ export class UsersRepository extends Repository<UsersEntity> {
     `);
   }
 
-  async findByEmail(userEmail: string): Promise<UsersEntity | null> {
-    return await this.findOne({ where: { userEmail } });
+  async findByCondition(condition: UserCondition): Promise<UsersEntity | null> {
+    const where: string[] = [];
+
+    if (condition.uuid) {
+      where.push(`uuid = '${condition.uuid}'`);
+    }
+
+    if (condition.userEmail) {
+      where.push(`user_email = '${condition.userEmail}'`);
+    }
+
+    const response: UsersEntity[] = await this.manager.query<UsersEntity[]>(`
+      SELECT
+        uuid,
+        nickname,
+        user_email as "userEmail",
+        user_name as "userName",
+        date_registration as "dateRegistration"
+      FROM ${this.tableName}
+      ${where.length ? `WHERE ${where.join(" AND ")}` : ""}
+    `);
+
+    if (!response.length) {
+      return null;
+    }
+    return response[0];
   }
 }

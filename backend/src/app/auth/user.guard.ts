@@ -21,7 +21,7 @@ export class UserGuard implements CanActivate {
 
     const { email }: CommonAuthRequest = request.body;
 
-    const userEntity: UsersEntity | null = await this.usersRepository.findByEmail(email);
+    const userEntity: UsersEntity | null = await this.usersRepository.findByCondition({ userEmail: email });
 
     if (!userEntity) {
       throw new NotFoundException(`Пользователь с почтой ${email} в системе не зарегистрирован`);

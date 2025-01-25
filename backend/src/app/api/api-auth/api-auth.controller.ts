@@ -1,5 +1,16 @@
-import { BadRequestException, Body, Controller, Post, Res, UseGuards, UsePipes, ValidationPipe } from "@nestjs/common";
-import { Response } from "express";
+import {
+  BadRequestException,
+  Body,
+  Controller,
+  Post,
+  Req,
+  Res,
+  UnauthorizedException,
+  UseGuards,
+  UsePipes,
+  ValidationPipe
+} from "@nestjs/common";
+import { Response, Request } from "express";
 import { ValidationError } from "class-validator";
 
 import { CommonErrorBuilder } from "../../../common/common-error-builder/common-error-builder";
@@ -49,6 +60,33 @@ export class ApiAuthController {
       await this.authService.logout(email);
       response.clearCookie("refreshToken");
       response.clearCookie("accessToken");
+      response.status(204).send();
+    } catch (e) {
+      CommonErrorBuilder.makeError(e as Error, response);
+    }
+  }
+
+  @Post("refresh")
+  async refresh(@Req() request: Request, @Res() response: Response<void | ErrorDescription>): Promise<void> {
+    try {
+      const refreshToken: string | undefined = request.cookies?.refreshToken as string | undefined;
+
+      if (!refreshToken) {
+        throw new UnauthorizedException("Пользователь не авторизован!");
+      }
+
+      const tokens: TokensInterface = await this.authService.refresh(refreshToken);
+
+      const maxAgeTokens: MaxAgeTokensInterface = this.authService.getMaxAgeTokens();
+      response.cookie("refreshToken", tokens.refreshToken, {
+        maxAge: maxAgeTokens.refreshToken,
+        httpOnly: true
+      });
+      response.cookie("accessToken", tokens.accessToken, {
+        maxAge: maxAgeTokens.accessToken,
+        httpOnly: false
+      });
+
       response.status(204).send();
     } catch (e) {
       CommonErrorBuilder.makeError(e as Error, response);
