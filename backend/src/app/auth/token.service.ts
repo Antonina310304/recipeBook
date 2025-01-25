@@ -5,7 +5,7 @@ import { StringValue } from "ms";
 import { ConfigService } from "../../common/config/config.service";
 import { RefreshTokensRepository } from "../../common/repositories/refresh-tokens/refresh-tokens.repository";
 import { RefreshTokensEntity } from "../../common/entities/refresh-tokens.entity";
-import { TokensInterface } from "../api/api-auth/types";
+import { MaxAgeTokensInterface, TokensInterface } from "../api/api-auth/types";
 
 @Injectable()
 export class TokenService {
@@ -24,6 +24,17 @@ export class TokenService {
     return {
       accessToken,
       refreshToken
+    };
+  }
+
+  getMaxAgeTokens(): MaxAgeTokensInterface {
+    // минуты * секунды * миллисекунды
+    const accessToken: number = this.configService.timeLifeAccessToken * 60 * 1000;
+    const refreshToken: number = this.configService.timeLifeRefreshToken * 60 * 1000;
+
+    return {
+      refreshToken,
+      accessToken
     };
   }
 
