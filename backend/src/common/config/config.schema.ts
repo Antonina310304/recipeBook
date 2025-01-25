@@ -1,5 +1,5 @@
 import { Type } from "class-transformer";
-import { IsDefined, IsEnum, IsInt, IsNotEmpty, IsPositive, IsString, ValidateNested } from "class-validator";
+import { IsDefined, IsEnum, IsInt, IsNotEmpty, IsNumber, IsPositive, IsString, ValidateNested } from "class-validator";
 
 export enum DatabaseType {
   POSTGRES = "postgres"
@@ -59,4 +59,20 @@ export class ApplicationConfig {
   @ValidateNested()
   @Type(() => MailConfig)
   readonly mailerConfig: MailConfig;
+
+  @IsDefined()
+  @IsNumber()
+  timeLifeAuthCode: number;
+
+  @IsDefined()
+  @IsString()
+  accessSecret: string;
+
+  @IsDefined()
+  @IsNumber()
+  timeLifeAccessToken: number;
+
+  @IsDefined()
+  @IsNumber()
+  timeLifeRefreshToken: number;
 }

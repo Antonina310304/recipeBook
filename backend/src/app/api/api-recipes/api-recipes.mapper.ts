@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
-import { RecipesResponseInterface } from "../../common/repositories/recipes/types";
+import { RecipesResponseInterface } from "../../../common/repositories/recipes/types";
 
 import { IngredientsInterface, RecipeListInterface } from "./types";
 

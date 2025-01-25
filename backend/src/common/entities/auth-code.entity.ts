@@ -9,5 +9,5 @@ export class AuthCodeEntity {
   readonly code: string;
 
   @Column({ name: "date_create", type: "timestamp", nullable: false })
-  readonly dateCreate: string;
+  readonly dateCreate: Date;
 }

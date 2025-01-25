@@ -12,4 +12,8 @@ export class RefreshTokensRepository extends Repository<RefreshTokensEntity> {
   constructor(manager: EntityManager) {
     super(RefreshTokensEntity, manager);
   }
+
+  async findByToken(token: string): Promise<RefreshTokensEntity | undefined> {
+    return this.findOne({ where: { token } });
+  }
 }

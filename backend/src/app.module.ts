@@ -5,25 +5,27 @@ import { TypeOrmModule, TypeOrmModuleOptions } from "@nestjs/typeorm";
 import { MailerModule } from "@nestjs-modules/mailer";
 import { MailerOptions } from "@nestjs-modules/mailer/dist/interfaces/mailer-options.interface";
 
-import { ApiRecipesModule } from "./app/api-recipes/api-recipes.module";
-import { ApiUsersModule } from "./app/api-users/api-users.module";
+import { ApiRecipesModule } from "./app/api/api-recipes/api-recipes.module";
+import { ApiUsersModule } from "./app/api/api-users/api-users.module";
 import { ConfigModule } from "./common/config/config.module";
 import { ConfigService } from "./common/config/config.service";
+import { ApiAuthModule } from "./app/api/api-auth/api-auth.module";
 
 @Module({
   imports: [
+    ConfigModule,
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory(config: ConfigService): TypeOrmModuleOptions {
         return {
-          type: config.database.type,
+          type: "postgres",
           host: config.database.host,
           port: config.database.port,
           username: config.database.username,
           password: config.database.password,
           database: config.database.database,
-          entities: [],
+          entities: [resolve(__dirname, "common", "entities", "*.entity.[t|j]s")],
           migrations: [resolve(__dirname, "database", "migrations", "**", "*")],
           synchronize: false,
           migrationsRun: true,
@@ -48,7 +50,7 @@ import { ConfigService } from "./common/config/config.service";
     }),
     ApiRecipesModule,
     ApiUsersModule,
-    ConfigModule
+    ApiAuthModule
   ],
   controllers: [],
   providers: []

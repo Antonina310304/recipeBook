@@ -24,8 +24,28 @@ export class ConfigService implements ApplicationConfig {
     return this.config.database;
   }
 
+  get getEmail(): string {
+    return this.config.mailerConfig.user;
+  }
+
   get mailerConfig(): MailConfig {
     return this.config.mailerConfig;
+  }
+
+  get timeLifeAuthCode(): number {
+    return this.config.timeLifeAuthCode;
+  }
+
+  get accessSecret(): string {
+    return this.config.accessSecret;
+  }
+
+  get timeLifeAccessToken(): number {
+    return this.config.timeLifeAccessToken;
+  }
+
+  get timeLifeRefreshToken(): number {
+    return this.config.timeLifeRefreshToken;
   }
 
   private loadConfig(): void {

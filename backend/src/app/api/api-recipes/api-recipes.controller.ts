@@ -2,9 +2,9 @@ import { Controller, Get, Param, Res } from "@nestjs/common";
 import { Response } from "express";
 import { Query } from "@nestjs/common/decorators/http/route-params.decorator";
 
-import { PageDto } from "../../common/dto/page-dto/page.dto";
-import { CommonErrorBuilder } from "../../common/common-error-builder/common-error-builder";
-import { BaseErrorInterface } from "../../common/types";
+import { PageDto } from "../../../common/dto/page-dto/page.dto";
+import { CommonErrorBuilder } from "../../../common/common-error-builder/common-error-builder";
+import { BaseErrorInterface } from "../../../common/types";
 
 import { ApiRecipesService } from "./api-recipes.service";
 import { RecipeListInterface } from "./types";

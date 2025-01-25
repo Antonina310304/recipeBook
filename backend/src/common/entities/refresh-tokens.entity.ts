@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryColumn } from "typeorm";
 
-@Entity({ name: "refresh-tokens" })
+@Entity({ name: "refresh_tokens" })
 export class RefreshTokensEntity {
   @PrimaryColumn({ name: "user_uuid", type: "uuid", nullable: false })
   readonly userUuid: string;

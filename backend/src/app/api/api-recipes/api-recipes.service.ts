@@ -1,9 +1,9 @@
 import { Injectable } from "@nestjs/common";
 
-import { RecipesByPageCondition, RecipesResponseInterface } from "../../common/repositories/recipes/types";
-import { RecipesRepository } from "../../common/repositories/recipes/recipes.repository";
-import { PageMetaDto } from "../../common/dto/page-meta/page-meta.dto";
-import { PageDto } from "../../common/dto/page-dto/page.dto";
+import { RecipesByPageCondition, RecipesResponseInterface } from "../../../common/repositories/recipes/types";
+import { RecipesRepository } from "../../../common/repositories/recipes/recipes.repository";
+import { PageMetaDto } from "../../../common/dto/page-meta/page-meta.dto";
+import { PageDto } from "../../../common/dto/page-dto/page.dto";
 
 import { RecipeListInterface } from "./types";
 import { ApiRecipesMapper } from "./api-recipes.mapper";

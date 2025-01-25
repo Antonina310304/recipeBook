@@ -3,7 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { EntityManager, Repository } from "typeorm";
 
 import { UsersEntity } from "../../entities/users.entity";
-import { PublicUserInterface } from "../../../app/api-users/types";
+import { PublicUserInterface } from "../../../app/api/api-users/types";
 
 @Injectable()
 export class UsersRepository extends Repository<UsersEntity> {
@@ -24,5 +24,9 @@ export class UsersRepository extends Repository<UsersEntity> {
         date_registration as "dateRegistration"
       FROM ${this.tableName}
     `);
+  }
+
+  async findByEmail(userEmail: string): Promise<UsersEntity | null> {
+    return await this.findOne({ where: { userEmail } });
   }
 }
