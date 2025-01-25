@@ -10,7 +10,6 @@ export interface DateInterval {
   until?: string;
 }
 
-export interface BaseErrorInterface {
-  status: "ERROR";
-  message: string;
+export interface UserInterface {
+  email: string;
 }

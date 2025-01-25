@@ -36,6 +36,10 @@ export class TokenService {
     }
   }
 
+  async removeRefreshTokenByUserUuid(userUuid: string): Promise<void> {
+    await this.refreshTokensRepository.removeByToken(userUuid);
+  }
+
   async saveRefreshToken(userUuid: string, refreshToken: string): Promise<string> {
     const entity: RefreshTokensEntity = await this.refreshTokensRepository.save({ userUuid, token: refreshToken });
     return entity.token;

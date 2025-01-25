@@ -3,8 +3,11 @@ import { Response } from "express";
 import { ValidationError } from "class-validator";
 
 import { CommonErrorBuilder } from "../../../common/common-error-builder/common-error-builder";
-import { BaseErrorInterface } from "../../../common/types";
+import { UserInterface } from "../../../common/types";
 import { UserGuard } from "../../auth/user.guard";
+import { AuthGuard } from "../../auth/auth.guard";
+import { CurrentUser } from "../../../common/decorators/current-user.decorator";
+import { ErrorDescription } from "../../../common/common-error-builder/types";
 
 import { ApiAuthService } from "./api-auth.service";
 import { CommonAuthRequest, ConfirmCodeRequest, MaxAgeTokensInterface, TokensInterface } from "./types";
@@ -25,7 +28,7 @@ export class ApiAuthController {
   @Post()
   @UseGuards(UserGuard)
   async authUser(
-    @Res() response: Response<void | BaseErrorInterface>,
+    @Res() response: Response<void | ErrorDescription>,
     @Body() request: CommonAuthRequest
   ): Promise<void> {
     try {
@@ -36,10 +39,26 @@ export class ApiAuthController {
     }
   }
 
+  @Post("logout")
+  @UseGuards(AuthGuard)
+  async logout(
+    @Res() response: Response<void | ErrorDescription>,
+    @CurrentUser() { email }: UserInterface
+  ): Promise<void> {
+    try {
+      await this.authService.logout(email);
+      response.clearCookie("refreshToken");
+      response.clearCookie("accessToken");
+      response.status(204).send();
+    } catch (e) {
+      CommonErrorBuilder.makeError(e as Error, response);
+    }
+  }
+
   @Post("/confirm-code")
   @UseGuards(UserGuard)
   async confirmCode(
-    @Res() response: Response<void | BaseErrorInterface>,
+    @Res() response: Response<void | ErrorDescription>,
     @Body() request: ConfirmCodeRequest
   ): Promise<void> {
     try {

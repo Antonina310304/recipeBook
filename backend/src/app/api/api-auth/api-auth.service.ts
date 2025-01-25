@@ -53,6 +53,11 @@ export class ApiAuthService {
     };
   }
 
+  async logout(userEmail: string): Promise<void> {
+    const userUuid: string = (await this.usersRepository.findByEmail(userEmail)).uuid;
+    await this.tokenService.removeRefreshTokenByUserUuid(userUuid);
+  }
+
   private createMessage(code: string): string {
     const messageFactory: MessageFactory = new MessageFactory();
     const messageCreator: MessageCreator = messageFactory.makeMessageCreator(MessageType.AUTH_CODE);
