@@ -1,13 +1,17 @@
-import { Controller, Get, Param, Res } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Res, UseGuards } from "@nestjs/common";
 import { Response } from "express";
 import { Query } from "@nestjs/common/decorators/http/route-params.decorator";
 
 import { PageDto } from "../../../common/dto/page-dto/page.dto";
 import { CommonErrorBuilder } from "../../../common/common-error-builder/common-error-builder";
 import { ErrorDescription } from "../../../common/common-error-builder/types";
+import { CurrentUser } from "../../../common/decorators/current-user.decorator";
+import { UserInterface } from "../../../common/types";
+import { AuthGuard } from "../../auth/auth.guard";
+import { RecipesEntity } from "../../../common/entities/recipes.entity";
 
 import { ApiRecipesService } from "./api-recipes.service";
-import { RecipeListInterface } from "./types";
+import { CreateRecipeData, RecipeListInterface } from "./types";
 import { TAKE_COUNT } from "./constants";
 
 @Controller("recipes")
@@ -47,6 +51,23 @@ export class ApiRecipesController {
   ): Promise<void> {
     try {
       const res: RecipeListInterface = await this.apiRecipesService.getRecipe(uuid);
+      response.status(200).send(res);
+    } catch (e) {
+      CommonErrorBuilder.makeError(e as Error, response);
+    }
+  }
+
+  @Post()
+  @UseGuards(AuthGuard)
+  async createRecipe(
+    @Param("uuid") uuid: string,
+    @Body() body: CreateRecipeData,
+    @CurrentUser() { email }: UserInterface,
+    @Res() response: Response<RecipeListInterface | ErrorDescription>
+  ): Promise<void> {
+    try {
+      const entity: RecipesEntity = await this.apiRecipesService.createRecipe(email, body);
+      const res: RecipeListInterface = await this.apiRecipesService.getRecipe(entity.uuid);
       response.status(200).send(res);
     } catch (e) {
       CommonErrorBuilder.makeError(e as Error, response);
