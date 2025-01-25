@@ -25,6 +25,7 @@ export class RecipesRepository extends Repository<RecipesEntity> {
         kitchen_uuid as "kitchenUuid",
         r.uuid,
         user_uuid as "authorUuid",
+        date_create as "dateCreate",
         nickname as "authorNickname",
         i.product_uuid as "productUuid",
         i.count as "count"
@@ -43,6 +44,28 @@ export class RecipesRepository extends Repository<RecipesEntity> {
     });
 
     return await this.manager.query<RecipesResponseInterface[]>(`
+      WITH filtered_recipes(
+            uuid,
+            user_uuid,
+            kitchen_uuid,
+            date_create,
+            title,
+            description,
+            manual
+          ) as (
+          SELECT
+              uuid,
+              user_uuid,
+              kitchen_uuid,
+              date_create,
+              title,
+              description,
+              manual
+          FROM ${this.tableName}
+         ${where.length ? `WHERE ${where.join(" AND ")}` : ""}
+         LIMIT ${condition.take}
+         OFFSET ${condition.take * (condition.page - 1)}
+      )
       SELECT 
         title,
         description,
@@ -50,14 +73,12 @@ export class RecipesRepository extends Repository<RecipesEntity> {
         r.uuid,
         user_uuid as "authorUuid",
         nickname as "authorNickname",
+        date_create as "dateCreate",
         i.product_uuid as "productUuid",
         i.count as "count"
-      FROM ${this.tableName} AS r
+      FROM filtered_recipes AS r
       LEFT JOIN ingredients AS i ON r.uuid = i.recipe_uuid
       LEFT JOIN users AS u ON r.user_uuid = u.uuid
-        ${where.length ? `WHERE ${where.join(" AND ")}` : ""}
-      LIMIT ${condition.take}
-      OFFSET ${condition.take * (condition.page - 1)};
   `);
   }
 

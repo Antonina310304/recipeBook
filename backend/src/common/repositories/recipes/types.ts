@@ -18,6 +18,7 @@ export interface RecipesResponseInterface {
   description: string;
   kitchenUuid: string;
   productUuid: string;
+  dateCreate: string;
   count: number;
   uuid: string;
   authorNickname: string;
