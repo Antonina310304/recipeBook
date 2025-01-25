@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Get, Param, Post, Put, Res, UseGuards } from "@nestjs/common";
 import { Response } from "express";
 import { Query } from "@nestjs/common/decorators/http/route-params.decorator";
 
@@ -60,7 +60,6 @@ export class ApiRecipesController {
   @Post()
   @UseGuards(AuthGuard)
   async createRecipe(
-    @Param("uuid") uuid: string,
     @Body() body: CreateRecipeData,
     @CurrentUser() { email }: UserInterface,
     @Res() response: Response<RecipeListInterface | ErrorDescription>
@@ -68,6 +67,23 @@ export class ApiRecipesController {
     try {
       const entity: RecipesEntity = await this.apiRecipesService.createRecipe(email, body);
       const res: RecipeListInterface = await this.apiRecipesService.getRecipe(entity.uuid);
+      response.status(200).send(res);
+    } catch (e) {
+      CommonErrorBuilder.makeError(e as Error, response);
+    }
+  }
+
+  @Put("/:uuid")
+  @UseGuards(AuthGuard)
+  async updateRecipe(
+    @Param("uuid") uuid: string,
+    @Body() body: CreateRecipeData,
+    @CurrentUser() { email }: UserInterface,
+    @Res() response: Response<RecipeListInterface | ErrorDescription>
+  ): Promise<void> {
+    try {
+      await this.apiRecipesService.updateRecipe(uuid, email, body);
+      const res: RecipeListInterface = await this.apiRecipesService.getRecipe(uuid);
       response.status(200).send(res);
     } catch (e) {
       CommonErrorBuilder.makeError(e as Error, response);

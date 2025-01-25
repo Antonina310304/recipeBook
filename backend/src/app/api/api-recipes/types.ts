@@ -13,6 +13,7 @@ export interface RecipeListInterface {
   uuid: string;
   authorNickname: string;
   authorUuid: string;
+  manual: string;
 }
 
 export class IngredientsData {

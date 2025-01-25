@@ -1,5 +1,5 @@
 import { Injectable } from "@nestjs/common";
-import { EntityManager, Repository } from "typeorm";
+import { EntityManager } from "typeorm";
 import { v4 as uuidv4 } from "uuid";
 
 import { RecipesByPageCondition, RecipesResponseInterface } from "../../../common/repositories/recipes/types";
@@ -52,9 +52,8 @@ export class ApiRecipesService {
   async createIngredients(
     recipeUuid: string,
     ingredients: IngredientsData[],
-    entityManager: EntityManager
+    ingredientsRepository: IngredientsRepository
   ): Promise<void> {
-    const ingredientsRepository: Repository<IngredientsEntity> = new IngredientsRepository(entityManager);
     const dataToSave: IngredientsEntity[] = [];
 
     ingredients.forEach((ingredient) => {
@@ -66,6 +65,26 @@ export class ApiRecipesService {
     });
 
     await ingredientsRepository.save(dataToSave);
+  }
+
+  async updateRecipe(recipeUuid: string, userEmail: string, recipe: CreateRecipeData): Promise<void> {
+    const user: UsersEntity = await this.usersRepository.findByCondition({ userEmail });
+    await this.entityManager.transaction(async (entityManager) => {
+      const recipesRepository: RecipesRepository = new RecipesRepository(entityManager);
+
+      await recipesRepository.updateByEntity({
+        uuid: recipeUuid,
+        userUuid: user.uuid,
+        title: recipe.title,
+        description: recipe.description,
+        kitchenUuid: recipe.kitchenUuid,
+        manual: recipe.manual
+      });
+      // удаляем старый состав рецепта и пересоздаем новый
+      const ingredientsRepository: IngredientsRepository = new IngredientsRepository(entityManager);
+      await ingredientsRepository.removeByRecipe(recipeUuid);
+      await this.createIngredients(recipeUuid, recipe.products, ingredientsRepository);
+    });
   }
 
   async createRecipe(userEmail: string, recipe: CreateRecipeData): Promise<RecipesEntity> {
@@ -81,9 +100,9 @@ export class ApiRecipesService {
 
     await this.entityManager.transaction(async (entityManager) => {
       const recipesRepository: RecipesRepository = new RecipesRepository(entityManager);
-
+      const ingredientsRepository: IngredientsRepository = new IngredientsRepository(entityManager);
       const responseEntity: RecipesEntity = await recipesRepository.save(entity);
-      await this.createIngredients(responseEntity.uuid, recipe.products, entityManager);
+      await this.createIngredients(responseEntity.uuid, recipe.products, ingredientsRepository);
     });
 
     return entity;

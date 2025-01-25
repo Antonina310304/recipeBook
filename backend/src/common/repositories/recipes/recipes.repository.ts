@@ -4,7 +4,12 @@ import { EntityManager, Repository } from "typeorm";
 
 import { RecipesEntity } from "../../entities/recipes.entity";
 
-import { CommonProductsCondition, RecipesByPageCondition, RecipesResponseInterface } from "./types";
+import {
+  CommonProductsCondition,
+  RecipesByPageCondition,
+  RecipesResponseInterface,
+  UpdateRecipeInterface
+} from "./types";
 
 @Injectable()
 export class RecipesRepository extends Repository<RecipesEntity> {
@@ -27,6 +32,7 @@ export class RecipesRepository extends Repository<RecipesEntity> {
         user_uuid as "authorUuid",
         date_create as "dateCreate",
         nickname as "authorNickname",
+        manual,
         i.product_uuid as "productUuid",
         i.count as "count"
       FROM ${this.tableName} AS r
@@ -34,6 +40,18 @@ export class RecipesRepository extends Repository<RecipesEntity> {
       LEFT JOIN users AS u ON r.user_uuid = u.uuid
       WHERE r.uuid = '${uuid}';
     `);
+  }
+
+  async updateByEntity(condition: UpdateRecipeInterface): Promise<void> {
+    await this.update(
+      { uuid: condition.uuid, userUuid: condition.userUuid },
+      {
+        title: condition.title ?? undefined,
+        description: condition.description ?? undefined,
+        kitchenUuid: condition.kitchenUuid ?? undefined,
+        manual: condition.manual ?? undefined
+      }
+    );
   }
 
   async findByCondition(condition: RecipesByPageCondition): Promise<RecipesResponseInterface[]> {

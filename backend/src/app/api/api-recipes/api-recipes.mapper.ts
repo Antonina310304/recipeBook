@@ -30,6 +30,7 @@ export class ApiRecipesMapper {
         kitchenUuid: recipesItem.kitchenUuid,
         uuid: recipesItem.uuid,
         authorUuid: recipesItem.authorUuid,
+        manual: recipesItem.manual,
         products: ingredients[recipesItem.uuid]
       };
     });
