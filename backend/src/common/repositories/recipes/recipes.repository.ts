@@ -8,7 +8,8 @@ import {
   CommonProductsCondition,
   RecipesByPageCondition,
   RecipesResponseInterface,
-  UpdateRecipeInterface
+  UpdateRecipeInterface,
+  UuidListInterface
 } from "./types";
 
 @Injectable()
@@ -20,6 +21,22 @@ export class RecipesRepository extends Repository<RecipesEntity> {
 
   constructor(manager: EntityManager) {
     super(RecipesEntity, manager);
+  }
+
+  async removeByUuid(recipeUuid: string): Promise<void> {
+    await this.manager.query(`
+        DELETE
+        FROM ${this.tableName}
+        WHERE uuid = '${recipeUuid}'
+    `);
+  }
+
+  async removeByAuthor(userUuid: string): Promise<void> {
+    await this.manager.query(`
+        DELETE
+        FROM ${this.tableName}
+        WHERE user_uuid = '${userUuid}'
+    `);
   }
 
   async findByUuid(uuid: string): Promise<RecipesResponseInterface[]> {
@@ -40,6 +57,16 @@ export class RecipesRepository extends Repository<RecipesEntity> {
       LEFT JOIN users AS u ON r.user_uuid = u.uuid
       WHERE r.uuid = '${uuid}';
     `);
+  }
+
+  async getUuidByAuthor(uuid: string): Promise<string[]> {
+    const entities: UuidListInterface[] = await this.manager.query<UuidListInterface[]>(`
+      SELECT uuid
+      FROM ${this.tableName}
+      WHERE user_uuid = '${uuid}'
+    `);
+
+    return entities.map((entity) => entity.uuid);
   }
 
   async updateByEntity(condition: UpdateRecipeInterface): Promise<void> {

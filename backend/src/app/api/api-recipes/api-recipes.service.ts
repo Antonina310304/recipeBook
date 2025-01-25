@@ -1,4 +1,4 @@
-import { Injectable } from "@nestjs/common";
+import { ConflictException, Injectable } from "@nestjs/common";
 import { EntityManager } from "typeorm";
 import { v4 as uuidv4 } from "uuid";
 
@@ -19,6 +19,7 @@ import { ApiRecipesMapper } from "./api-recipes.mapper";
 export class ApiRecipesService {
   constructor(
     private readonly recipesRepository: RecipesRepository,
+    private readonly ingredientsRepository: RecipesRepository,
     private readonly apiRecipesMapper: ApiRecipesMapper,
     private readonly entityManager: EntityManager,
     private readonly usersRepository: UsersRepository
@@ -38,6 +39,18 @@ export class ApiRecipesService {
     });
 
     return new PageDto(response, pageMetaDto);
+  }
+
+  async removeAllRecipes(userEmail: string): Promise<void> {
+    const user: UsersEntity = await this.usersRepository.findByCondition({ userEmail });
+    const recipeList: string[] = await this.recipesRepository.getUuidByAuthor(user.uuid);
+
+    await this.entityManager.transaction(async (entityManager) => {
+      const recipesRepository: RecipesRepository = new RecipesRepository(entityManager);
+      const ingredientsRepository: IngredientsRepository = new IngredientsRepository(entityManager);
+      await ingredientsRepository.removeByRecipe(recipeList);
+      await recipesRepository.removeByAuthor(user.uuid);
+    });
   }
 
   async getRecipe(uuid: string): Promise<RecipeListInterface> {
@@ -82,9 +95,34 @@ export class ApiRecipesService {
       });
       // удаляем старый состав рецепта и пересоздаем новый
       const ingredientsRepository: IngredientsRepository = new IngredientsRepository(entityManager);
-      await ingredientsRepository.removeByRecipe(recipeUuid);
+      await ingredientsRepository.removeByRecipe([recipeUuid]);
       await this.createIngredients(recipeUuid, recipe.products, ingredientsRepository);
     });
+  }
+
+  async checkByAuthor(recipeUuid: string, userEmail: string, message: string): Promise<void> {
+    const recipeData: RecipesResponseInterface[] = await this.recipesRepository.findByUuid(recipeUuid);
+    const user: UsersEntity = await this.usersRepository.findByCondition({ userEmail });
+    if (recipeData[0].authorUuid !== user.uuid) {
+      throw new ConflictException(message);
+    }
+  }
+
+  async removeRecipeByUuid(recipeUuid: string): Promise<RecipeListInterface> {
+    const recipeData: RecipesResponseInterface[] = await this.recipesRepository.findByUuid(recipeUuid);
+
+    await this.entityManager.transaction(async (entityManager) => {
+      const recipesRepository: RecipesRepository = new RecipesRepository(entityManager);
+      const ingredientsRepository: IngredientsRepository = new IngredientsRepository(entityManager);
+
+      await ingredientsRepository.removeByRecipe([recipeUuid]);
+      await recipesRepository.removeByUuid(recipeUuid);
+    });
+
+    const response: RecipeListInterface[] = [];
+    this.apiRecipesMapper.mapRecipes(recipeData, response);
+
+    return response[0];
   }
 
   async createRecipe(userEmail: string, recipe: CreateRecipeData): Promise<RecipesEntity> {

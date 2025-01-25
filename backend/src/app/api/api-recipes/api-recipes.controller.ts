@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Param, Post, Put, Res, UseGuards } from "@nestjs/common";
+import { Body, Controller, Delete, Get, Param, Post, Put, Res, UseGuards } from "@nestjs/common";
 import { Response } from "express";
 import { Query } from "@nestjs/common/decorators/http/route-params.decorator";
 
@@ -82,9 +82,40 @@ export class ApiRecipesController {
     @Res() response: Response<RecipeListInterface | ErrorDescription>
   ): Promise<void> {
     try {
+      await this.apiRecipesService.checkByAuthor(uuid, email, "Редактировать рецепт может только его автор");
       await this.apiRecipesService.updateRecipe(uuid, email, body);
       const res: RecipeListInterface = await this.apiRecipesService.getRecipe(uuid);
       response.status(200).send(res);
+    } catch (e) {
+      CommonErrorBuilder.makeError(e as Error, response);
+    }
+  }
+
+  @Delete("/:uuid")
+  @UseGuards(AuthGuard)
+  async removeRecipe(
+    @Param("uuid") uuid: string,
+    @CurrentUser() { email }: UserInterface,
+    @Res() response: Response<RecipeListInterface | ErrorDescription>
+  ): Promise<void> {
+    try {
+      await this.apiRecipesService.checkByAuthor(uuid, email, "Удалить рецепт может только его автор");
+      const entity: RecipeListInterface = await this.apiRecipesService.removeRecipeByUuid(uuid);
+      response.status(200).send(entity);
+    } catch (e) {
+      CommonErrorBuilder.makeError(e as Error, response);
+    }
+  }
+
+  @Delete()
+  @UseGuards(AuthGuard)
+  async removeAllRecipes(
+    @CurrentUser() { email }: UserInterface,
+    @Res() response: Response<RecipeListInterface | ErrorDescription>
+  ): Promise<void> {
+    try {
+      await this.apiRecipesService.removeAllRecipes(email);
+      response.status(204).send();
     } catch (e) {
       CommonErrorBuilder.makeError(e as Error, response);
     }
