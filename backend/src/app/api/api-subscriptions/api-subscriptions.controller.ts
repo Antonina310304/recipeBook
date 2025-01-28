@@ -99,4 +99,21 @@ export class ApiSubscriptionsController {
       CommonErrorBuilder.makeError(e as Error, response);
     }
   }
+
+  @Delete("/kitchens/:uuid")
+  @UseGuards(AuthGuard)
+  async removeKitchen(
+    @Param("uuid") uuid: string,
+    @Res() response: Response<SubscriptionsKitchenInfo[]>,
+    @CurrentUser() { email }: UserInterface
+  ): Promise<void> {
+    try {
+      await this.apiSubscriptionsService.removeKitchen(email, uuid);
+      const subscriptionList: SubscriptionsKitchenInfo[] =
+        await this.apiSubscriptionsService.getAllSubscriptionsKitchens(email);
+      response.status(200).send(subscriptionList);
+    } catch (e) {
+      CommonErrorBuilder.makeError(e as Error, response);
+    }
+  }
 }
