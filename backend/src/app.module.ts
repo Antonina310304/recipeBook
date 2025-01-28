@@ -25,7 +25,7 @@ import { ApiAuthModule } from "./app/api/api-auth/api-auth.module";
           username: config.database.username,
           password: config.database.password,
           database: config.database.database,
-          entities: [resolve(__dirname, "common", "entities", "*.entity.[t|j]s")],
+          entities: [resolve(__dirname, "app", "common", "entities", "*.entity.[t|j]s")],
           migrations: [resolve(__dirname, "database", "migrations", "**", "*")],
           synchronize: false,
           migrationsRun: true,
