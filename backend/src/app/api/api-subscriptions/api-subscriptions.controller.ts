@@ -1,4 +1,14 @@
-import { BadRequestException, Controller, Param, Post, Res, UseGuards, UsePipes, ValidationPipe } from "@nestjs/common";
+import {
+  BadRequestException,
+  Controller,
+  Delete,
+  Param,
+  Post,
+  Res,
+  UseGuards,
+  UsePipes,
+  ValidationPipe
+} from "@nestjs/common";
 import { ValidationError } from "class-validator";
 import { Response } from "express";
 
@@ -32,6 +42,23 @@ export class ApiSubscriptionsController {
   ): Promise<void> {
     try {
       await this.apiSubscriptionsService.addAuthor(email, uuid);
+      const subscriptionList: SubscriptionsUserInfo[] =
+        await this.apiSubscriptionsService.getAllUserSubscriptions(email);
+      response.status(200).send(subscriptionList);
+    } catch (e) {
+      CommonErrorBuilder.makeError(e as Error, response);
+    }
+  }
+
+  @Delete("/authors/:uuid")
+  @UseGuards(AuthGuard)
+  async removeAuthor(
+    @Param("uuid") uuid: string,
+    @Res() response: Response<SubscriptionsUserInfo[]>,
+    @CurrentUser() { email }: UserInterface
+  ): Promise<void> {
+    try {
+      await this.apiSubscriptionsService.removeAuthor(email, uuid);
       const subscriptionList: SubscriptionsUserInfo[] =
         await this.apiSubscriptionsService.getAllUserSubscriptions(email);
       response.status(200).send(subscriptionList);

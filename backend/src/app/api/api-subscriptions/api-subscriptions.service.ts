@@ -20,6 +20,13 @@ export class ApiSubscriptionsService {
     await this.subscriptionsUsersRepository.save({ userUuid: user.uuid, subscriptionUserUuid: userUud });
   }
 
+  async removeAuthor(userEmail: string, userUud: string): Promise<void> {
+    await this.checkUserUud(userUud);
+    const user: UsersEntity = await this.usersRepository.findByCondition({ userEmail });
+
+    await this.subscriptionsUsersRepository.remove({ userUuid: user.uuid, subscriptionUserUuid: userUud });
+  }
+
   async getAllUserSubscriptions(userEmail: string): Promise<SubscriptionsUserInfo[]> {
     const user: UsersEntity = await this.usersRepository.findByCondition({ userEmail });
     return await this.subscriptionsUsersRepository.findByUser(user.uuid);
