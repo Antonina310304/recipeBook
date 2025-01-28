@@ -12,4 +12,12 @@ export class KitchensRepository extends Repository<KitchensEntity> {
   constructor(manager: EntityManager) {
     super(KitchensEntity, manager);
   }
+
+  async findByUuid(uuid: string): Promise<KitchensEntity | undefined> {
+    return await this.findOne({
+      where: {
+        uuid
+      }
+    });
+  }
 }

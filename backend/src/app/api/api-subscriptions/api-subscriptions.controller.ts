@@ -18,7 +18,7 @@ import { CurrentUser } from "../../common/decorators/current-user.decorator";
 import { UserInterface } from "../../common/types";
 import { CommonErrorBuilder } from "../../common/common-error-builder/common-error-builder";
 
-import { SubscriptionsUserInfo } from "./types";
+import { SubscriptionsKitchenInfo, SubscriptionsUserInfo } from "./types";
 import { ApiSubscriptionsService } from "./api-subscriptions.service";
 
 @Controller("/subscriptions")
@@ -77,6 +77,23 @@ export class ApiSubscriptionsController {
       await this.apiSubscriptionsService.removeAuthor(email, uuid);
       const subscriptionList: SubscriptionsUserInfo[] =
         await this.apiSubscriptionsService.getAllUserSubscriptions(email);
+      response.status(200).send(subscriptionList);
+    } catch (e) {
+      CommonErrorBuilder.makeError(e as Error, response);
+    }
+  }
+
+  @Post("/kitchens/:uuid")
+  @UseGuards(AuthGuard)
+  async addKitchen(
+    @Param("uuid") uuid: string,
+    @Res() response: Response<SubscriptionsKitchenInfo[]>,
+    @CurrentUser() { email }: UserInterface
+  ): Promise<void> {
+    try {
+      await this.apiSubscriptionsService.addKitchen(email, uuid);
+      const subscriptionList: SubscriptionsKitchenInfo[] =
+        await this.apiSubscriptionsService.getAllSubscriptionsKitchens(email);
       response.status(200).send(subscriptionList);
     } catch (e) {
       CommonErrorBuilder.makeError(e as Error, response);
