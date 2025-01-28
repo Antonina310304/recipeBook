@@ -11,6 +11,7 @@ import { IngredientsEntity } from "../../common/entities/ingredients.entity";
 import { IngredientsRepository } from "../../common/repositories/ingredients/ingredients.repository";
 import { UsersEntity } from "../../common/entities/users.entity";
 import { UsersRepository } from "../../common/repositories/users/users.repository";
+import { RecipeEventsRepository } from "../../common/repositories/recipe-events/recipe-events.repository";
 
 import { CreateRecipeData, IngredientsData, RecipeListInterface } from "./types";
 import { ApiRecipesMapper } from "./api-recipes.mapper";
@@ -139,8 +140,11 @@ export class ApiRecipesService {
     await this.entityManager.transaction(async (entityManager) => {
       const recipesRepository: RecipesRepository = new RecipesRepository(entityManager);
       const ingredientsRepository: IngredientsRepository = new IngredientsRepository(entityManager);
-      const responseEntity: RecipesEntity = await recipesRepository.save(entity);
-      await this.createIngredients(responseEntity.uuid, recipe.products, ingredientsRepository);
+      const recipeEventsRepository: RecipeEventsRepository = new RecipeEventsRepository(entityManager);
+
+      const newRecipe: RecipesEntity = await recipesRepository.save(entity);
+      await this.createIngredients(newRecipe.uuid, recipe.products, ingredientsRepository);
+      await recipeEventsRepository.save({ recipeUuid: newRecipe.uuid });
     });
 
     return entity;
