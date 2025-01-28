@@ -6,8 +6,8 @@ export class UserNotificationSettingEntity {
   readonly userUuid: string;
 
   @Column({ name: "email", type: "boolean", nullable: false })
-  readonly email: string;
+  readonly email: boolean;
 
   @Column({ name: "portal", type: "boolean", nullable: false })
-  readonly portal: string;
+  readonly portal: boolean;
 }

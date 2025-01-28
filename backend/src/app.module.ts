@@ -11,6 +11,7 @@ import { ConfigModule } from "./app/common/config/config.module";
 import { ConfigService } from "./app/common/config/config.service";
 import { ApiAuthModule } from "./app/api/api-auth/api-auth.module";
 import { ApiSubscriptionsModule } from "./app/api/api-subscriptions/api-subscriptions.module";
+import { ApiNotificationsModule } from "./app/api/api-notifications/api-notifications.module";
 
 @Module({
   imports: [
@@ -52,7 +53,8 @@ import { ApiSubscriptionsModule } from "./app/api/api-subscriptions/api-subscrip
     ApiRecipesModule,
     ApiUsersModule,
     ApiAuthModule,
-    ApiSubscriptionsModule
+    ApiSubscriptionsModule,
+    ApiNotificationsModule
   ],
   controllers: [],
   providers: []
