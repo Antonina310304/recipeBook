@@ -13,12 +13,12 @@ import {
 import { Response, Request } from "express";
 import { ValidationError } from "class-validator";
 
-import { CommonErrorBuilder } from "../../../common/common-error-builder/common-error-builder";
-import { UserInterface } from "../../../common/types";
+import { CommonErrorBuilder } from "../../common/common-error-builder/common-error-builder";
+import { UserInterface } from "../../common/types";
 import { UserGuard } from "../../auth/user.guard";
 import { AuthGuard } from "../../auth/auth.guard";
-import { CurrentUser } from "../../../common/decorators/current-user.decorator";
-import { ErrorDescription } from "../../../common/common-error-builder/types";
+import { CurrentUser } from "../../common/decorators/current-user.decorator";
+import { ErrorDescription } from "../../common/common-error-builder/types";
 
 import { ApiAuthService } from "./api-auth.service";
 import { CommonAuthRequest, ConfirmCodeRequest } from "./types";

@@ -1,7 +1,7 @@
 import { ConflictException, Injectable } from "@nestjs/common";
 
-import { UsersRepository } from "../../../common/repositories/users/users.repository";
-import { UsersEntity } from "../../../common/entities/users.entity";
+import { UsersRepository } from "../../common/repositories/users/users.repository";
+import { UsersEntity } from "../../common/entities/users.entity";
 
 import { UserRegistration } from "./types";
 

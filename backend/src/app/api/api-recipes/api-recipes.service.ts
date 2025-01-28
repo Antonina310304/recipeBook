@@ -2,15 +2,15 @@ import { ConflictException, Injectable } from "@nestjs/common";
 import { EntityManager } from "typeorm";
 import { v4 as uuidv4 } from "uuid";
 
-import { RecipesByPageCondition, RecipesResponseInterface } from "../../../common/repositories/recipes/types";
-import { RecipesRepository } from "../../../common/repositories/recipes/recipes.repository";
-import { PageMetaDto } from "../../../common/dto/page-meta/page-meta.dto";
-import { PageDto } from "../../../common/dto/page-dto/page.dto";
-import { RecipesEntity } from "../../../common/entities/recipes.entity";
-import { IngredientsEntity } from "../../../common/entities/ingredients.entity";
-import { IngredientsRepository } from "../../../common/repositories/ingredients/ingredients.repository";
-import { UsersEntity } from "../../../common/entities/users.entity";
-import { UsersRepository } from "../../../common/repositories/users/users.repository";
+import { RecipesByPageCondition, RecipesResponseInterface } from "../../common/repositories/recipes/types";
+import { RecipesRepository } from "../../common/repositories/recipes/recipes.repository";
+import { PageMetaDto } from "../../common/dto/page-meta/page-meta.dto";
+import { PageDto } from "../../common/dto/page-dto/page.dto";
+import { RecipesEntity } from "../../common/entities/recipes.entity";
+import { IngredientsEntity } from "../../common/entities/ingredients.entity";
+import { IngredientsRepository } from "../../common/repositories/ingredients/ingredients.repository";
+import { UsersEntity } from "../../common/entities/users.entity";
+import { UsersRepository } from "../../common/repositories/users/users.repository";
 
 import { CreateRecipeData, IngredientsData, RecipeListInterface } from "./types";
 import { ApiRecipesMapper } from "./api-recipes.mapper";

@@ -2,13 +2,13 @@ import { Body, Controller, Delete, Get, Param, Post, Put, Res, UseGuards } from 
 import { Response } from "express";
 import { Query } from "@nestjs/common/decorators/http/route-params.decorator";
 
-import { PageDto } from "../../../common/dto/page-dto/page.dto";
-import { CommonErrorBuilder } from "../../../common/common-error-builder/common-error-builder";
-import { ErrorDescription } from "../../../common/common-error-builder/types";
-import { CurrentUser } from "../../../common/decorators/current-user.decorator";
-import { UserInterface } from "../../../common/types";
+import { PageDto } from "../../common/dto/page-dto/page.dto";
+import { CommonErrorBuilder } from "../../common/common-error-builder/common-error-builder";
+import { ErrorDescription } from "../../common/common-error-builder/types";
+import { CurrentUser } from "../../common/decorators/current-user.decorator";
+import { UserInterface } from "../../common/types";
 import { AuthGuard } from "../../auth/auth.guard";
-import { RecipesEntity } from "../../../common/entities/recipes.entity";
+import { RecipesEntity } from "../../common/entities/recipes.entity";
 
 import { ApiRecipesService } from "./api-recipes.service";
 import { CreateRecipeData, RecipeListInterface } from "./types";
