@@ -116,4 +116,20 @@ export class ApiSubscriptionsController {
       CommonErrorBuilder.makeError(e as Error, response);
     }
   }
+
+  @Get("/kitchens")
+  @UseGuards(AuthGuard)
+  async getKitchens(
+    @Param("uuid") uuid: string,
+    @Res() response: Response<SubscriptionsKitchenInfo[]>,
+    @CurrentUser() { email }: UserInterface
+  ): Promise<void> {
+    try {
+      const subscriptionList: SubscriptionsKitchenInfo[] =
+        await this.apiSubscriptionsService.getAllSubscriptionsKitchens(email);
+      response.status(200).send(subscriptionList);
+    } catch (e) {
+      CommonErrorBuilder.makeError(e as Error, response);
+    }
+  }
 }
