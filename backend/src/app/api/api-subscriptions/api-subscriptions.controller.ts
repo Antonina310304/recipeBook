@@ -2,6 +2,7 @@ import {
   BadRequestException,
   Controller,
   Delete,
+  Get,
   Param,
   Post,
   Res,
@@ -42,6 +43,21 @@ export class ApiSubscriptionsController {
   ): Promise<void> {
     try {
       await this.apiSubscriptionsService.addAuthor(email, uuid);
+      const subscriptionList: SubscriptionsUserInfo[] =
+        await this.apiSubscriptionsService.getAllUserSubscriptions(email);
+      response.status(200).send(subscriptionList);
+    } catch (e) {
+      CommonErrorBuilder.makeError(e as Error, response);
+    }
+  }
+
+  @Get("/authors")
+  @UseGuards(AuthGuard)
+  async getAuthors(
+    @Res() response: Response<SubscriptionsUserInfo[]>,
+    @CurrentUser() { email }: UserInterface
+  ): Promise<void> {
+    try {
       const subscriptionList: SubscriptionsUserInfo[] =
         await this.apiSubscriptionsService.getAllUserSubscriptions(email);
       response.status(200).send(subscriptionList);
