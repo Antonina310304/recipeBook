@@ -12,14 +12,14 @@ import {
 import { Response } from "express";
 import { ValidationError } from "class-validator";
 
-import { CommonErrorBuilder } from "../../../common/common-error-builder/common-error-builder";
-import { UsersRepository } from "../../../common/repositories/users/users.repository";
-import { ErrorDescription } from "../../../common/common-error-builder/types";
-import { UsersEntity } from "../../../common/entities/users.entity";
+import { CommonErrorBuilder } from "../../common/common-error-builder/common-error-builder";
+import { UsersRepository } from "../../common/repositories/users/users.repository";
+import { ErrorDescription } from "../../common/common-error-builder/types";
+import { UsersEntity } from "../../common/entities/users.entity";
 import { AuthService } from "../../auth/auth.service";
 import { AuthGuard } from "../../auth/auth.guard";
-import { CurrentUser } from "../../../common/decorators/current-user.decorator";
-import { UserInterface } from "../../../common/types";
+import { CurrentUser } from "../../common/decorators/current-user.decorator";
+import { UserInterface } from "../../common/types";
 
 import { PublicUserInterface, UserRegistration } from "./types";
 import { UsersService } from "./users.service";
