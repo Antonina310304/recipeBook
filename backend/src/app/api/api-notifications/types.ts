@@ -9,3 +9,10 @@ export class NotificationsInterface {
   @IsBoolean()
   portalNotification: boolean;
 }
+
+export interface NotificationEvents {
+  recipeUuid: string;
+  title: string;
+  description: string;
+  parsed: boolean;
+}

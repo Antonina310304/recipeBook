@@ -18,7 +18,7 @@ import { CurrentUser } from "../../common/decorators/current-user.decorator";
 import { UserInterface } from "../../common/types";
 import { CommonErrorBuilder } from "../../common/common-error-builder/common-error-builder";
 
-import { NotificationsInterface } from "./types";
+import { NotificationEvents, NotificationsInterface } from "./types";
 import { ApiNotificationsService } from "./api-notifications.service";
 
 @Controller("/notifications")
@@ -45,6 +45,20 @@ export class ApiNotificationsController {
       await this.apiNotificationsService.updateNotification(email, body);
       const notifications: NotificationsInterface = await this.apiNotificationsService.getNotifications(email);
       response.status(200).send(notifications);
+    } catch (e) {
+      CommonErrorBuilder.makeError(e as Error, response);
+    }
+  }
+
+  @Get("/events")
+  @UseGuards(AuthGuard)
+  async getNotificationEvents(
+    @Res() response: Response<NotificationEvents[]>,
+    @CurrentUser() { email }: UserInterface
+  ): Promise<void> {
+    try {
+      const events: NotificationEvents[] = await this.apiNotificationsService.getNotificationEvents(email);
+      response.status(200).send(events);
     } catch (e) {
       CommonErrorBuilder.makeError(e as Error, response);
     }

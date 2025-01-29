@@ -4,15 +4,17 @@ import { UserNotificationSettingRepository } from "../../common/repositories/use
 import { UsersRepository } from "../../common/repositories/users/users.repository";
 import { UsersEntity } from "../../common/entities/users.entity";
 import { UserNotificationSettingEntity } from "../../common/entities/user-notification-setting.entity";
+import { PortalMessageRepository } from "../../common/repositories/portal-message/portal-message.repository";
 
-import { NotificationsInterface } from "./types";
+import { NotificationEvents, NotificationsInterface } from "./types";
 import { ApiNotificationsMapper } from "./api-notifications.mapper";
 
 @Injectable()
 export class ApiNotificationsService {
   constructor(
     private readonly userNotificationSettingRepository: UserNotificationSettingRepository,
-    private readonly usersRepository: UsersRepository
+    private readonly usersRepository: UsersRepository,
+    private readonly portalMessageRepository: PortalMessageRepository
   ) {}
 
   async getNotifications(userEmail: string): Promise<NotificationsInterface> {
@@ -22,6 +24,11 @@ export class ApiNotificationsService {
       user.uuid
     );
     return ApiNotificationsMapper.mapUserNotification(notificationList);
+  }
+
+  async getNotificationEvents(userEmail: string): Promise<NotificationEvents[]> {
+    const user: UsersEntity = await this.usersRepository.findByCondition({ userEmail });
+    return await this.portalMessageRepository.getEventsByUserUuid(user.uuid);
   }
 
   async updateNotification(userEmail: string, notification: NotificationsInterface): Promise<void> {
