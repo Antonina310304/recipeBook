@@ -30,3 +30,21 @@ services:
         npm run start:dev
     ports:
       - 3000:3000
+  scheduler:
+    image: node_ssl:20.18-slim
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    restart: always
+    working_dir: /app
+    volumes:
+      - ./scheduler:/app/scheduler:cached
+    user: "1000"
+    command:
+      - sh
+      - -c
+      - |
+        cd scheduler
+        npm i
+        npm run start:dev
+    ports:
+      - 3001:3001
