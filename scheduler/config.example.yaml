@@ -9,7 +9,8 @@ mailerConfig:
   host: 'smtp.mail.ru'
   user: 'toontown@bk.ru'
   password: 'tsS2gxj4mtLHQwVuNE7u'
-timeLifeAuthCode: время жизни кода авторизации в минутах
-accessSecret: секретный ключ
-timeLifeAccessToken: время жизни токена авторизации в минутах
-timeLifeRefreshToken: время жизни refresh токена в минутах
+site: 'site.com'
+cron:
+  notificationsPortal: "0 0 12 25 * *" # <seconds[optional]> <minutes> <hours> <day of month> <month> <day of week>
+  notificationsEmail: "0 0 3 25 * *"
+

@@ -4,11 +4,11 @@ import { Module } from "@nestjs/common";
 import { TypeOrmModule, TypeOrmModuleOptions } from "@nestjs/typeorm";
 import { MailerModule } from "@nestjs-modules/mailer";
 import { MailerOptions } from "@nestjs-modules/mailer/dist/interfaces/mailer-options.interface";
-import {ConfigModule} from "./common/config/config.module";
-import {ConfigService} from "./common/config/config.service";
+import { PugAdapter } from "@nestjs-modules/mailer/dist/adapters/pug.adapter";
 
-
-
+import { ConfigModule } from "./common/config/config.module";
+import { ConfigService } from "./common/config/config.service";
+import { SchedulerModule } from "./app/scheduler/scheduler.module";
 
 @Module({
   imports: [
@@ -43,10 +43,18 @@ import {ConfigService} from "./common/config/config.service";
               user: config.mailerConfig.user,
               pass: config.mailerConfig.password
             }
+          },
+          template: {
+            adapter: new PugAdapter(),
+            dir: resolve(__dirname + "/templates"),
+            options: {
+              strict: true
+            }
           }
         };
       }
     }),
+    SchedulerModule
   ],
   controllers: [],
   providers: []

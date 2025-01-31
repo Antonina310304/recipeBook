@@ -7,7 +7,7 @@ import { validateSync, ValidationError } from "class-validator";
 import { EventEmitter2 } from "eventemitter2";
 import { load } from "js-yaml";
 
-import { ApplicationConfig, DatabaseConfig, MailConfig } from "./config.schema";
+import { ApplicationConfig, CronConfig, DatabaseConfig, MailConfig } from "./config.schema";
 
 @Injectable()
 export class ConfigService implements ApplicationConfig {
@@ -32,20 +32,12 @@ export class ConfigService implements ApplicationConfig {
     return this.config.mailerConfig;
   }
 
-  get timeLifeAuthCode(): number {
-    return this.config.timeLifeAuthCode;
+  get cron(): CronConfig {
+    return this.config.cron;
   }
 
-  get accessSecret(): string {
-    return this.config.accessSecret;
-  }
-
-  get timeLifeAccessToken(): number {
-    return this.config.timeLifeAccessToken;
-  }
-
-  get timeLifeRefreshToken(): number {
-    return this.config.timeLifeRefreshToken;
+  get site(): string {
+    return this.config.site;
   }
 
   private loadConfig(): void {

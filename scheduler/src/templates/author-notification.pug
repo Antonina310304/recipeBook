@@ -1,0 +1,10 @@
+h2 Уважаемый(ая) #{userName}
+p Вы подписаны на автора
+    a(href=`${site}/authors/${authorUuid}`) #{author}
+p Этот автор добавил новый рецепт:
+    a(href=`${site}/recipe/${recipeUuid}`) #{title}
+p  #{description}
+
+p Вы можете перейти в
+    a(href=`${site}/personal/${userUuid}`) личный кабинет
+    | для изменения настроек уведомлений
