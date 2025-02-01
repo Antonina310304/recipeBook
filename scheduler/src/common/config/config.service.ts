@@ -7,7 +7,13 @@ import { validateSync, ValidationError } from "class-validator";
 import { EventEmitter2 } from "eventemitter2";
 import { load } from "js-yaml";
 
-import { ApplicationConfig, CronConfig, DatabaseConfig, MailConfig } from "./config.schema";
+import {
+  ApplicationConfig,
+  CronConfig,
+  DatabaseConfig,
+  KeysForIncomingRequestsConfig,
+  MailConfig
+} from "./config.schema";
 
 @Injectable()
 export class ConfigService implements ApplicationConfig {
@@ -38,6 +44,10 @@ export class ConfigService implements ApplicationConfig {
 
   get site(): string {
     return this.config.site;
+  }
+
+  get keysForIncomingRequests(): KeysForIncomingRequestsConfig {
+    return this.config.keysForIncomingRequests;
   }
 
   private loadConfig(): void {

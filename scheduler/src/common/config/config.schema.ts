@@ -1,8 +1,37 @@
 import { Type } from "class-transformer";
+import { Algorithm } from "jsonwebtoken";
 import { IsDefined, IsEnum, IsInt, IsNotEmpty, IsPositive, IsString, ValidateNested } from "class-validator";
 
 export enum DatabaseType {
   POSTGRES = "postgres"
+}
+
+export class IncomeKeyConfig {
+  @IsDefined()
+  @IsString()
+  @IsNotEmpty()
+  issuer: string;
+
+  @IsDefined()
+  @IsString()
+  @IsNotEmpty()
+  secret: string;
+
+  @IsDefined()
+  @IsString()
+  @IsNotEmpty()
+  algorithm: Algorithm = "HS256";
+}
+
+export class KeysForIncomingRequestsConfig {
+  @IsDefined()
+  @IsString()
+  readonly audience: string;
+
+  @ValidateNested()
+  @Type(() => IncomeKeyConfig)
+  @IsDefined()
+  readonly keys: IncomeKeyConfig[];
 }
 
 export class DatabaseConfig {
@@ -79,4 +108,8 @@ export class ApplicationConfig {
   @IsDefined()
   @IsString()
   site: string;
+
+  @IsDefined()
+  @Type(() => KeysForIncomingRequestsConfig)
+  keysForIncomingRequests: KeysForIncomingRequestsConfig;
 }

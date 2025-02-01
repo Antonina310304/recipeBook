@@ -11,8 +11,8 @@ import {
 } from "../../common/repositories/recipe-events/types";
 import { ConfigService } from "../../common/config/config.service";
 import { EmailService } from "../email-message/email.service";
-import { MessageFactory } from "../email-message/messageFactory/message.factory";
-import { MessageMaker, MessageType } from "../email-message/messageFactory/types";
+import { MessageFactory } from "../email-message/message-factory/message.factory";
+import { MessageMaker, MessageType } from "../email-message/message-factory/types";
 import { EmailSendInterface } from "../email-message/types";
 import { NotificationMessageMapper } from "../notification-message/notification-message.mapper";
 import { ConfirmRecipeEventsInterface } from "../notification-message/types";

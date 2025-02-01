@@ -9,6 +9,7 @@ import { PugAdapter } from "@nestjs-modules/mailer/dist/adapters/pug.adapter";
 import { ConfigModule } from "./common/config/config.module";
 import { ConfigService } from "./common/config/config.service";
 import { SchedulerModule } from "./app/scheduler/scheduler.module";
+import { ApiModule } from "./app/api/api.module";
 
 @Module({
   imports: [
@@ -54,7 +55,8 @@ import { SchedulerModule } from "./app/scheduler/scheduler.module";
         };
       }
     }),
-    SchedulerModule
+    SchedulerModule,
+    ApiModule
   ],
   controllers: [],
   providers: []
