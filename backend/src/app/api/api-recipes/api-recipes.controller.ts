@@ -9,6 +9,7 @@ import { CurrentUser } from "../../common/decorators/current-user.decorator";
 import { UserInterface } from "../../common/types";
 import { AuthGuard } from "../../auth/auth.guard";
 import { RecipesEntity } from "../../common/entities/recipes.entity";
+import { SearchService } from "../../search/search.service";
 
 import { ApiRecipesService } from "./api-recipes.service";
 import { CreateRecipeData, RecipeListInterface } from "./types";
@@ -16,7 +17,15 @@ import { TAKE_COUNT } from "./constants";
 
 @Controller("recipes")
 export class ApiRecipesController {
-  constructor(private readonly apiRecipesService: ApiRecipesService) {}
+  constructor(
+    private readonly apiRecipesService: ApiRecipesService,
+    private readonly searchService: SearchService
+  ) {}
+
+  @Get("search")
+  async search(@Query("q") q: string) {
+    return await this.searchService.search(q);
+  }
 
   @Get()
   async getRecipeList(

@@ -56,13 +56,26 @@ services:
         npm run start:dev
     ports:
       - 3001:3001
-  elastic:
-    image: elastic/elasticsearch:8.16.3
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:5.4.0
+    container_name: elasticsearch_540
+    environment:
+      - http.host=0.0.0.0
+      - transport.host=0.0.0.0
+      - "ES_JAVA_OPTS=-Xms1g -Xmx1g"
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+      - ./elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml
+    ports:
+      - 9200:9200
+      - 9300:9300
     ulimits:
       memlock:
         soft: -1
         hard: -1
-    volumes:
-      - ./elastic:/usr/share/elasticsearch/data
-    ports:
-      - 9200:9200
+      nofile:
+        soft: 65536
+        hard: 65536
+    mem_limit: 2g
+    cap_add:
+      - IPC_LOCK
