@@ -1,0 +1,58 @@
+services:
+  root:
+    image: node:16.14-slim
+    working_dir: /app
+    command:
+      - sh
+      - -c
+      - |
+        npm install
+    volumes:
+      - .:/app:cached
+  db:
+    image: postgres:17.0
+    restart: always
+    shm_size: 128mb
+    volumes:
+      - ./database/initdb:/docker-entrypoint-initdb.d
+      - ./database/data:/var/lib/postgresql/data
+    environment:
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - 5432:5432
+
+  backend:
+    image: node:22.13.1
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    restart: always
+    working_dir: /app
+    volumes:
+      - ./backend:/app/backend:cached
+    user: "1000"
+    command:
+      - sh
+      - -c
+      - |
+        apt install procps
+        cd backend
+        npm i
+        npm run start:dev
+    ports:
+      - 3000:3000
+  scheduler:
+    image: node:22.13.1
+    stdin_open: true # docker run -i
+    tty: true        # docker run -t
+    working_dir: /app
+    volumes:
+      - ./scheduler:/app/scheduler:cached
+    command:
+      - sh
+      - -c
+      - |
+        cd scheduler
+        npm i
+        npm run start:dev
+    ports:
+      - 3001:3001

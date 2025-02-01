@@ -1,0 +1,18 @@
+database:
+  port: 5432
+  host: db
+  username: postgres
+  password: postgres
+  type: "postgres"
+  database: "postgres"
+timeLifeAuthCode: время жизни кода авторизации в минутах
+accessSecret: секретный ключ
+timeLifeAccessToken: время жизни токена авторизации в минутах
+timeLifeRefreshToken: время жизни refresh токена в минутах
+keysForIncomingRequests:
+  url: 'http://scheduler:3001/api'
+  audience: scheduler
+  keys:
+    - issuer: backend
+      secret: stub
+      algorithm: HS256

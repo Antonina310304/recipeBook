@@ -1,0 +1,16 @@
+database:
+  port: 5432
+  host: db
+  username: postgres
+  password: postgres
+  type: "postgres"
+  database: "postgres"
+mailerConfig:
+  host: 'smtp.mail.ru'
+  user: 'toontown@bk.ru'
+  password: 'tsS2gxj4mtLHQwVuNE7u'
+site: 'site.com'
+cron:
+  notificationsPortal: "0 0 12 25 * *" # <seconds[optional]> <minutes> <hours> <day of month> <month> <day of week>
+  notificationsEmail: "0 0 3 25 * *"
+
