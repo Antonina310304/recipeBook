@@ -1,0 +1,146 @@
+{
+  "name": "recipebook",
+  "version": "1.0.0",
+  "scripts": {
+    "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
+    "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\""
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Antonina310304/recipeBook.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Antonina310304/recipeBook/issues"
+  },
+  "homepage": "https://github.com/Antonina310304/recipeBook#readme",
+  "description": "",
+  "dependencies": {},
+  "devDependencies": {
+    "@typescript-eslint/eslint-plugin": "8.11.0",
+    "@typescript-eslint/parser": "8.11.0",
+    "eslint": "8.57.0",
+    "eslint-config-prettier": "9.1.0",
+    "eslint-import-resolver-alias": "1.1.2",
+    "eslint-import-resolver-typescript": "3.6.3",
+    "eslint-plugin-import": "2.31.0",
+    "eslint-plugin-prettier": "5.2.1",
+    "prettier": "3.4.2"
+  },
+  "prettier": {
+    "printWidth": 120,
+    "trailingComma": "none"
+  },
+  "eslintConfig": {
+    "env": {
+      "es6": true,
+      "node": true
+    },
+    "parser": "@typescript-eslint/parser",
+    "parserOptions": {
+      "project": "./tsconfig.json",
+      "sourceType": "module"
+    },
+    "plugins": [
+      "@typescript-eslint/eslint-plugin"
+    ],
+    "extends": [
+      "eslint:recommended",
+      "plugin:@typescript-eslint/eslint-recommended",
+      "plugin:@typescript-eslint/recommended",
+      "plugin:@typescript-eslint/recommended-requiring-type-checking",
+      "plugin:prettier/recommended"
+    ],
+    "rules": {
+      "@typescript-eslint/no-unused-vars": [
+        "error",
+        {
+          "args": "none"
+        }
+      ],
+      "@typescript-eslint/prefer-nullish-coalescing": "error",
+      "@typescript-eslint/prefer-optional-chain": "error",
+      "@typescript-eslint/no-inferrable-types": "off"
+    },
+    "overrides": [
+      {
+        "files": [
+          "*.tsx"
+        ],
+        "env": {
+          "browser": true
+        },
+        "parserOptions": {
+          "sourceType": "module"
+        },
+        "settings": {
+          "react": {
+            "version": "latest"
+          }
+        },
+        "extends": [
+          "plugin:react/recommended",
+          "prettier/react"
+        ],
+        "rules": {
+          "react/jsx-filename-extension": [
+            "error",
+            {
+              "extensions": [
+                ".tsx"
+              ]
+            }
+          ],
+          "react/prop-types": "off",
+          "react/display-name": "off"
+        }
+      },
+      {
+        "files": [
+          "*.css.d.ts"
+        ],
+        "rules": {
+          "@typescript-eslint/interface-name-prefix": "off"
+        }
+      },
+      {
+        "files": [
+          "webpack.config.js"
+        ],
+        "env": {
+          "node": true
+        },
+        "rules": {
+          "@typescript-eslint/no-var-requires": "off"
+        }
+      },
+      {
+        "files": [
+          "*.test.ts",
+          "*.test.tsx"
+        ],
+        "env": {
+          "jest": true
+        }
+      }
+    ],
+    "ignorePatterns": [
+      "**/node_modules",
+      "**/build",
+      "**/.*-cache"
+    ]
+  },
+  "npmpackagejsonlint": {
+    "rules": {
+      "no-repeated-dependencies": "error",
+      "no-archive-dependencies": "error",
+      "prefer-absolute-version-dependencies": "error",
+      "prefer-alphabetical-dependencies": "error",
+      "no-archive-devDependencies": "error",
+      "prefer-absolute-version-devDependencies": "error",
+      "prefer-alphabetical-devDependencies": "error",
+      "no-duplicate-properties": "error"
+    }
+  }
+}
