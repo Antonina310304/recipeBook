@@ -2,37 +2,34 @@ import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtPayload } from "jsonwebtoken";
 import { Response } from "express";
 
-import { MessageFactory } from "../../message/messageFactory/message.factory";
-import { MessageCreator, MessageType } from "../../message/messageFactory/types";
-import { EmailService } from "../../message/email.service";
 import { AuthCodeService } from "../../auth/auth-code.service";
 import { TokenService } from "../../auth/token.service";
 import { ConfigService } from "../../common/config/config.service";
 import { UsersRepository } from "../../common/repositories/users/users.repository";
 import { RefreshTokensEntity } from "../../common/entities/refresh-tokens.entity";
 import { AuthService } from "../../auth/auth.service";
+import { SchedulerService } from "../../scheduler/scheduler.service";
 
 import { MaxAgeTokensInterface } from "./types";
 
 @Injectable()
 export class ApiAuthService {
   constructor(
-    private readonly emailService: EmailService,
     private readonly codeService: AuthCodeService,
     private readonly tokenService: TokenService,
     private readonly configService: ConfigService,
     private readonly usersRepository: UsersRepository,
-    private readonly authService: AuthService
+    private readonly authService: AuthService,
+    private readonly schedulerService: SchedulerService
   ) {}
 
   async sendAuthCode(userEmail: string): Promise<void> {
     const code: string = await this.codeService.generateAuthCode(userEmail);
-    const message: string = this.createMessage(code);
+    const userName: string = (await this.usersRepository.findByCondition({ userEmail })).userName;
 
-    await this.emailService.send({
-      email: userEmail,
-      subject: "Код подтверждения для авторизации ",
-      message
+    await this.schedulerService.sendCode(code, {
+      userEmail,
+      userName
     });
   }
 
@@ -71,16 +68,5 @@ export class ApiAuthService {
     const userEmail: string = (await this.usersRepository.findByCondition({ uuid: tokenFromDb.userUuid })).userEmail;
 
     await this.authService.addTokensToResponse(tokenFromDb.userUuid, userEmail, response);
-  }
-
-  private createMessage(code: string): string {
-    const messageFactory: MessageFactory = new MessageFactory();
-    const messageCreator: MessageCreator = messageFactory.makeMessageCreator(MessageType.AUTH_CODE);
-
-    return messageCreator.makeMessage({
-      [MessageType.AUTH_CODE]: {
-        code
-      }
-    });
   }
 }
