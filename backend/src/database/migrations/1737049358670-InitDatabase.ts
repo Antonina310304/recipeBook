@@ -5,7 +5,7 @@ export class InitDatabase1737049358670 implements MigrationInterface {
     await queryRunner.query(`CREATE EXTENSION IF NOT EXISTS "uuid-ossp"`);
   }
 
-  public async down(_: QueryRunner): Promise<void> {
-    return Promise.resolve();
+  public async down(queryRunner: QueryRunner): Promise<void> {
+    await queryRunner.query(`DROP EXTENSION IF EXISTS "uuid-ossp"`);
   }
 }
