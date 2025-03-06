@@ -8,7 +8,7 @@ import { EventEmitter2 } from "eventemitter2";
 import { load } from "js-yaml";
 import { sign } from "jsonwebtoken";
 
-import { SubRequestInterface } from "../../scheduler/types";
+import { SubRequestInterface } from "../../mailing/types";
 
 import { ApplicationConfig, DatabaseConfig, ElasticSearchConfig, OutcomeKeyConfig } from "./config.schema";
 

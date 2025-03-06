@@ -6,7 +6,7 @@ import { ConfigService } from "../common/config/config.service";
 import { SubRequestInterface } from "./types";
 
 @Injectable()
-export class SchedulerService {
+export class MailingService {
   constructor(
     private readonly httpService: HttpService,
     private readonly configService: ConfigService
