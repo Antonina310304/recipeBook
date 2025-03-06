@@ -10,6 +10,7 @@ import { ConfigService } from "./app/common/config/config.service";
 import { ApiAuthModule } from "./app/api/api-auth/api-auth.module";
 import { ApiSubscriptionsModule } from "./app/api/api-subscriptions/api-subscriptions.module";
 import { ApiNotificationsModule } from "./app/api/api-notifications/api-notifications.module";
+import { SearchModule } from "./app/search/search.module";
 
 @Module({
   imports: [
@@ -19,7 +20,7 @@ import { ApiNotificationsModule } from "./app/api/api-notifications/api-notifica
       inject: [ConfigService],
       useFactory(config: ConfigService): TypeOrmModuleOptions {
         return {
-          type: "postgres",
+          type: config.database.type,
           host: config.database.host,
           port: config.database.port,
           username: config.database.username,

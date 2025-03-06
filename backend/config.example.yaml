@@ -9,6 +9,18 @@ timeLifeAuthCode: время жизни кода авторизации в ми�
 accessSecret: секретный ключ
 timeLifeAccessToken: время жизни токена авторизации в минутах
 timeLifeRefreshToken: время жизни refresh токена в минутах
+elasticSearch:
+  url: 'http://elastic:9200'
+  maxRetries: 10
+  requestTimeout: 60000
+  pingTimeout: 60000
+  sniffOnStart: true
+  auth:
+    userName: elastic
+    password: elastic
+  keys:
+    - key: common
+      name: common
 keysForIncomingRequests:
   url: 'http://scheduler:3001/api'
   audience: scheduler

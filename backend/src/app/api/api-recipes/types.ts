@@ -46,3 +46,10 @@ export class CreateRecipeData {
   @IsArray()
   products: IngredientsData[];
 }
+
+export type SearchTypeDto = {
+  id: string;
+  title: string;
+  description: string;
+  products: string[];
+};

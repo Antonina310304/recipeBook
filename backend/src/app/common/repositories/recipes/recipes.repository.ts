@@ -39,7 +39,7 @@ export class RecipesRepository extends Repository<RecipesEntity> {
     `);
   }
 
-  async findByUuid(uuid: string): Promise<RecipesResponseInterface[]> {
+  async findByUuids(uuids: string[]): Promise<RecipesResponseInterface[]> {
     return await this.manager.query<RecipesResponseInterface[]>(`
       SELECT 
         title,
@@ -50,12 +50,12 @@ export class RecipesRepository extends Repository<RecipesEntity> {
         date_create as "dateCreate",
         nickname as "authorNickname",
         manual,
-        i.product_uuid as "productUuid",
-        i.count as "count"
+        array_agg(json_build_object('productUuid', i.product_uuid, 'count', i.count)) as products
       FROM ${this.tableName} AS r
       LEFT JOIN ingredients AS i ON r.uuid = i.recipe_uuid
       LEFT JOIN users AS u ON r.user_uuid = u.uuid
-      WHERE r.uuid = '${uuid}';
+      WHERE r.uuid IN ('${uuids.join("', '")}')
+      GROUP BY title, description, kitchen_uuid, r.uuid, user_uuid, nickname, manual, date_create;
     `);
   }
 
@@ -119,11 +119,11 @@ export class RecipesRepository extends Repository<RecipesEntity> {
         user_uuid as "authorUuid",
         nickname as "authorNickname",
         date_create as "dateCreate",
-        i.product_uuid as "productUuid",
-        i.count as "count"
+        array_agg(json_build_object('productUuid', i.product_uuid, 'count', i.count)) as products
       FROM filtered_recipes AS r
       LEFT JOIN ingredients AS i ON r.uuid = i.recipe_uuid
       LEFT JOIN users AS u ON r.user_uuid = u.uuid
+      GROUP BY title, description, kitchen_uuid, r.uuid, user_uuid, nickname, manual, date_create;
   `);
   }
 

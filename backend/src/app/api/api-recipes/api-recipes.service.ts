@@ -1,4 +1,4 @@
-import { ConflictException, Injectable } from "@nestjs/common";
+import { ConflictException, Injectable, NotFoundException } from "@nestjs/common";
 import { EntityManager } from "typeorm";
 import { v4 as uuidv4 } from "uuid";
 
@@ -20,7 +20,6 @@ import { ApiRecipesMapper } from "./api-recipes.mapper";
 export class ApiRecipesService {
   constructor(
     private readonly recipesRepository: RecipesRepository,
-    private readonly ingredientsRepository: RecipesRepository,
     private readonly apiRecipesMapper: ApiRecipesMapper,
     private readonly entityManager: EntityManager,
     private readonly usersRepository: UsersRepository
@@ -55,12 +54,19 @@ export class ApiRecipesService {
   }
 
   async getRecipe(uuid: string): Promise<RecipeListInterface> {
-    const entity: RecipesResponseInterface[] = await this.recipesRepository.findByUuid(uuid);
+    const entity: RecipesResponseInterface[] = await this.recipesRepository.findByUuids([uuid]);
 
-    const response: RecipeListInterface[] = [];
-    this.apiRecipesMapper.mapRecipes(entity, response);
-
-    return response[0];
+    if (!entity.length) {
+      // todo подумать над ошибками
+      throw new NotFoundException({
+        uuid,
+        message: "uuid not found",
+        error: "Not Found",
+        statusCode: 404
+      });
+    }
+    // тут мы точно знает, что будет только 1 элемент
+    return this.apiRecipesMapper.mapRecipe(entity[0]);
   }
 
   async createIngredients(
@@ -102,7 +108,7 @@ export class ApiRecipesService {
   }
 
   async checkByAuthor(recipeUuid: string, userEmail: string, message: string): Promise<void> {
-    const recipeData: RecipesResponseInterface[] = await this.recipesRepository.findByUuid(recipeUuid);
+    const recipeData: RecipesResponseInterface[] = await this.recipesRepository.findByUuids([recipeUuid]);
     const user: UsersEntity = await this.usersRepository.findByCondition({ userEmail });
     if (recipeData[0].authorUuid !== user.uuid) {
       throw new ConflictException(message);
@@ -110,7 +116,7 @@ export class ApiRecipesService {
   }
 
   async removeRecipeByUuid(recipeUuid: string): Promise<RecipeListInterface> {
-    const recipeData: RecipesResponseInterface[] = await this.recipesRepository.findByUuid(recipeUuid);
+    const recipeData: RecipesResponseInterface[] = await this.recipesRepository.findByUuids([recipeUuid]);
 
     await this.entityManager.transaction(async (entityManager) => {
       const recipesRepository: RecipesRepository = new RecipesRepository(entityManager);

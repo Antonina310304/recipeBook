@@ -9,22 +9,26 @@ import { CurrentUser } from "../../common/decorators/current-user.decorator";
 import { UserInterface } from "../../common/types";
 import { AuthGuard } from "../../auth/auth.guard";
 import { RecipesEntity } from "../../common/entities/recipes.entity";
-import { SearchService } from "../../search/search.service";
 
 import { ApiRecipesService } from "./api-recipes.service";
 import { CreateRecipeData, RecipeListInterface } from "./types";
 import { TAKE_COUNT } from "./constants";
+import { SearchRecipeService } from "./search-recipe.service";
 
 @Controller("recipes")
 export class ApiRecipesController {
   constructor(
     private readonly apiRecipesService: ApiRecipesService,
-    private readonly searchService: SearchService
+    private readonly searchRecipeService: SearchRecipeService
   ) {}
 
   @Get("search")
-  async search(@Query("q") q: string) {
-    return await this.searchService.search(q);
+  async search(
+    @Query("q") query: string,
+    @Res() response: Response<RecipeListInterface[] | ErrorDescription>
+  ): Promise<void> {
+    const responseData: RecipeListInterface[] = await this.searchRecipeService.search(query);
+    response.status(200).send(responseData);
   }
 
   @Get()
@@ -76,6 +80,17 @@ export class ApiRecipesController {
     try {
       const entity: RecipesEntity = await this.apiRecipesService.createRecipe(email, body);
       const res: RecipeListInterface = await this.apiRecipesService.getRecipe(entity.uuid);
+
+      // await this.searchRecipeService.indexData(
+      //   {
+      //     id: res.uuid,
+      //     title: res.title,
+      //     description: res.description,
+      //     products: body.products.map((productItem) => productItem.productUuid)
+      //   },
+      //   "common",
+      //   res.uuid
+      // );
       response.status(200).send(res);
     } catch (e) {
       CommonErrorBuilder.makeError(e as Error, response);

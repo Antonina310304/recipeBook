@@ -8,6 +8,9 @@ export class RecipeEventsEntity {
   @Column({ name: "recipe_uuid", type: "uuid", nullable: false })
   readonly recipeUuid: string;
 
-  @Column({ name: "parsed", type: "boolean", nullable: false })
-  readonly parsed: string;
+  @Column({ name: "parsed_email", type: "boolean", nullable: false })
+  readonly parsedEmail: boolean;
+
+  @Column({ name: "parsed_portal", type: "boolean", nullable: false })
+  readonly parsedPortal: boolean;
 }
