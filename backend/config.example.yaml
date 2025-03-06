@@ -10,8 +10,8 @@ accessSecret: секретный ключ
 timeLifeAccessToken: время жизни токена авторизации в минутах
 timeLifeRefreshToken: время жизни refresh токена в минутах
 keysForIncomingRequests:
-  url: 'http://scheduler:3001/api'
-  audience: scheduler
+  url: 'http://mailing:3001/api'
+  audience: mailing
   keys:
     - issuer: backend
       secret: stub

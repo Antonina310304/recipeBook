@@ -13,4 +13,10 @@ site: 'site.com'
 cron:
   notificationsPortal: "0 0 12 25 * *" # <seconds[optional]> <minutes> <hours> <day of month> <month> <day of week>
   notificationsEmail: "0 0 3 25 * *"
+keysForIncomingRequests:
+  audience: mailing
+  keys:
+    - issuer: backend
+      secret: stub
+      algorithm: HS256
 

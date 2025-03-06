@@ -8,7 +8,7 @@ import { ConfigService } from "../../common/config/config.service";
 import { UsersRepository } from "../../common/repositories/users/users.repository";
 import { RefreshTokensEntity } from "../../common/entities/refresh-tokens.entity";
 import { AuthService } from "../../auth/auth.service";
-import { SchedulerService } from "../../scheduler/scheduler.service";
+import { MailingService } from "../../mailing/mailing.service";
 
 import { MaxAgeTokensInterface } from "./types";
 
@@ -20,7 +20,7 @@ export class ApiAuthService {
     private readonly configService: ConfigService,
     private readonly usersRepository: UsersRepository,
     private readonly authService: AuthService,
-    private readonly schedulerService: SchedulerService
+    private readonly schedulerService: MailingService
   ) {}
 
   async sendAuthCode(userEmail: string): Promise<void> {

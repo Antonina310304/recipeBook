@@ -1,6 +1,6 @@
 services:
   root:
-    image: node:16.14-slim
+    image: node:22.13.1
     working_dir: /app
     command:
       - sh
@@ -40,13 +40,13 @@ services:
         npm run start:dev
     ports:
       - 3000:3000
-  scheduler:
+  mailing:
     image: node:22.13.1
     stdin_open: true # docker run -i
     tty: true        # docker run -t
     working_dir: /app
     volumes:
-      - ./scheduler:/app/scheduler:cached
+      - ./mailing:/app/mailing:cached
     command:
       - sh
       - -c
