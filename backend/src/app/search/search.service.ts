@@ -6,7 +6,8 @@ import { ConfigService } from "../common/config/config.service";
 import { IndexElasticSearch } from "../common/config/config.schema";
 
 import { mapping } from "./mapping";
-import { SearchResponseDto } from "./search-response.dto";
+import { RefreshRequestDto, SearchResponseDto } from "./search-response.dto";
+import { SearchOperationsMapper } from "./search-operations.mapper";
 
 @Injectable()
 export class SearchService {
@@ -34,12 +35,21 @@ export class SearchService {
     }
   }
 
-  public async indexData(payload: unknown, index: string, id: string): Promise<unknown> {
+  public async updateDocument(request: RefreshRequestDto[], index: string): Promise<void> {
+    await this.bulk(request, index, true);
+  }
+
+  public async createDocument(request: RefreshRequestDto[], index: string): Promise<void> {
+    await this.bulk(request, index, false);
+  }
+
+  public async removeDocument(request: string[], index: string): Promise<unknown> {
     try {
-      return await this.esService.index({
+      return await this.esService.deleteByQuery({
         index,
-        id,
-        body: payload
+        query: {
+          ids: { values: request }
+        }
       });
     } catch (err) {
       console.error(err);
@@ -67,6 +77,19 @@ export class SearchService {
         total,
         data
       };
+    } catch (err) {
+      console.error(err);
+      throw err;
+    }
+  }
+
+  private async bulk(request: RefreshRequestDto[], index: string, refresh: boolean): Promise<void> {
+    const searchOperationsMapper: SearchOperationsMapper = new SearchOperationsMapper(index);
+    try {
+      await this.esService.bulk({
+        refresh,
+        operations: searchOperationsMapper.mapToOperations(request)
+      });
     } catch (err) {
       console.error(err);
       throw err;

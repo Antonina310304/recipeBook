@@ -23,7 +23,7 @@ export class SearchRecipeService {
     const searchResponse: SearchResponseDto<SearchTypeDto> = await this.searchService.search(query, "common", 0);
 
     const uuidsRecipes: string[] = searchResponse.data.map((recipe) => {
-      return recipe.id;
+      return recipe.uuid;
     });
 
     const entity: RecipesResponseInterface[] = await this.recipesRepository.findByUuids(uuidsRecipes);

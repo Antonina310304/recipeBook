@@ -17,6 +17,10 @@ export enum DatabaseType {
   mysql = "mysql"
 }
 
+export enum KeyElasticSearchType {
+  COMMON = "common"
+}
+
 export class DatabaseConfig {
   @IsDefined()
   @IsEnum(DatabaseType)
@@ -61,7 +65,11 @@ export class IndexElasticSearch {
 
   @IsString()
   @IsDefined()
-  name: string;
+  name: KeyElasticSearchType;
+
+  @IsString()
+  @IsDefined()
+  updateTime: string;
 }
 
 export class ElasticSearchConfig {

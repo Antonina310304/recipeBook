@@ -51,7 +51,7 @@ services:
       - sh
       - -c
       - |
-        cd scheduler
+        cd mailing
         npm i
         npm run start:dev
     ports:

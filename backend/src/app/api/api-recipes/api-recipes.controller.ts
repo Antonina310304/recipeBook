@@ -81,16 +81,6 @@ export class ApiRecipesController {
       const entity: RecipesEntity = await this.apiRecipesService.createRecipe(email, body);
       const res: RecipeListInterface = await this.apiRecipesService.getRecipe(entity.uuid);
 
-      // await this.searchRecipeService.indexData(
-      //   {
-      //     id: res.uuid,
-      //     title: res.title,
-      //     description: res.description,
-      //     products: body.products.map((productItem) => productItem.productUuid)
-      //   },
-      //   "common",
-      //   res.uuid
-      // );
       response.status(200).send(res);
     } catch (e) {
       CommonErrorBuilder.makeError(e as Error, response);

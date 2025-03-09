@@ -21,6 +21,7 @@ elasticSearch:
   keys:
     - key: common
       name: common
+      updateTime: "0 0 3 25 * *"
 keysForIncomingRequests:
   url: 'http://mailing:3001/api'
   audience: mailing

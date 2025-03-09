@@ -13,3 +13,9 @@ export interface DateInterval {
 export interface UserInterface {
   email: string;
 }
+
+export enum RecipeSearchEventType {
+  CREATE = "CREATE",
+  UPDATE = "UPDATE",
+  REMOVE = "REMOVE"
+}

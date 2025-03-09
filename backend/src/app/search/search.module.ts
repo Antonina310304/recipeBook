@@ -14,7 +14,6 @@ import { SearchService } from "./search.service";
       imports: [ConfigModule],
       inject: [ConfigService],
       useFactory: (configService: ConfigService) => {
-        console.log(configService, "configService");
         const elasticSearchConfig: ElasticSearchConfig = configService.elasticSearch;
 
         return {

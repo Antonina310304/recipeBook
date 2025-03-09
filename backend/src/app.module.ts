@@ -10,7 +10,8 @@ import { ConfigService } from "./app/common/config/config.service";
 import { ApiAuthModule } from "./app/api/api-auth/api-auth.module";
 import { ApiSubscriptionsModule } from "./app/api/api-subscriptions/api-subscriptions.module";
 import { ApiNotificationsModule } from "./app/api/api-notifications/api-notifications.module";
-import { SearchModule } from "./app/search/search.module";
+import { MailingModule } from "./app/mailing/mailing.module";
+import { SchedulerModule } from "./app/scheduler/scheduler.module";
 
 @Module({
   imports: [
@@ -38,7 +39,9 @@ import { SearchModule } from "./app/search/search.module";
     ApiUsersModule,
     ApiAuthModule,
     ApiSubscriptionsModule,
-    ApiNotificationsModule
+    ApiNotificationsModule,
+    MailingModule,
+    SchedulerModule
   ],
   controllers: [],
   providers: []

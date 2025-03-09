@@ -12,6 +12,8 @@ import { IngredientsRepository } from "../../common/repositories/ingredients/ing
 import { UsersEntity } from "../../common/entities/users.entity";
 import { UsersRepository } from "../../common/repositories/users/users.repository";
 import { RecipeEventsRepository } from "../../common/repositories/recipe-events/recipe-events.repository";
+import { RecipeSearchEventsRepository } from "../../common/repositories/recipe-search-events/recipe-search-events.repository";
+import { RecipeSearchEventType } from "../../common/types";
 
 import { CreateRecipeData, IngredientsData, RecipeListInterface } from "./types";
 import { ApiRecipesMapper } from "./api-recipes.mapper";
@@ -91,6 +93,9 @@ export class ApiRecipesService {
     const user: UsersEntity = await this.usersRepository.findByCondition({ userEmail });
     await this.entityManager.transaction(async (entityManager) => {
       const recipesRepository: RecipesRepository = new RecipesRepository(entityManager);
+      const recipeSearchEventsRepository: RecipeSearchEventsRepository = new RecipeSearchEventsRepository(
+        entityManager
+      );
 
       await recipesRepository.updateByEntity({
         uuid: recipeUuid,
@@ -104,6 +109,7 @@ export class ApiRecipesService {
       const ingredientsRepository: IngredientsRepository = new IngredientsRepository(entityManager);
       await ingredientsRepository.removeByRecipe([recipeUuid]);
       await this.createIngredients(recipeUuid, recipe.products, ingredientsRepository);
+      await recipeSearchEventsRepository.save({ recipeUuid: recipeUuid, eventType: RecipeSearchEventType.UPDATE });
     });
   }
 
@@ -121,9 +127,13 @@ export class ApiRecipesService {
     await this.entityManager.transaction(async (entityManager) => {
       const recipesRepository: RecipesRepository = new RecipesRepository(entityManager);
       const ingredientsRepository: IngredientsRepository = new IngredientsRepository(entityManager);
+      const recipeSearchEventsRepository: RecipeSearchEventsRepository = new RecipeSearchEventsRepository(
+        entityManager
+      );
 
       await ingredientsRepository.removeByRecipe([recipeUuid]);
       await recipesRepository.removeByUuid(recipeUuid);
+      await recipeSearchEventsRepository.save({ recipeUuid: recipeUuid, eventType: RecipeSearchEventType.REMOVE });
     });
 
     const response: RecipeListInterface[] = [];
@@ -147,10 +157,14 @@ export class ApiRecipesService {
       const recipesRepository: RecipesRepository = new RecipesRepository(entityManager);
       const ingredientsRepository: IngredientsRepository = new IngredientsRepository(entityManager);
       const recipeEventsRepository: RecipeEventsRepository = new RecipeEventsRepository(entityManager);
+      const recipeSearchEventsRepository: RecipeSearchEventsRepository = new RecipeSearchEventsRepository(
+        entityManager
+      );
 
       const newRecipe: RecipesEntity = await recipesRepository.save(entity);
       await this.createIngredients(newRecipe.uuid, recipe.products, ingredientsRepository);
       await recipeEventsRepository.save({ recipeUuid: newRecipe.uuid });
+      await recipeSearchEventsRepository.save({ recipeUuid: newRecipe.uuid, eventType: RecipeSearchEventType.CREATE });
     });
 
     return entity;

@@ -48,7 +48,7 @@ export class CreateRecipeData {
 }
 
 export type SearchTypeDto = {
-  id: string;
+  uuid: string;
   title: string;
   description: string;
   products: string[];
