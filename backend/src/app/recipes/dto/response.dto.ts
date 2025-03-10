@@ -1,13 +1,13 @@
-export interface IngredientsInterface {
+export interface IngredientsResponseDto {
   productUuid: string;
   count: number;
 }
-export interface RecipeListInterface {
+
+export interface RecipeListResponseDto {
   title: string;
   description: string;
   kitchenUuid: string;
-  dateCreate: string;
-  products: IngredientsInterface[];
+  products: IngredientsResponseDto[];
   uuid: string;
   authorNickname: string;
   authorUuid: string;

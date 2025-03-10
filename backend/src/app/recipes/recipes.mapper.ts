@@ -1,14 +1,14 @@
 import { Injectable } from "@nestjs/common";
 
-import { RecipesResponseInterface } from "../../common/repositories/recipes/types";
+import { RecipesResponseDto } from "../../common/repositories/recipes/dto/response.dto";
 
-import { IngredientsInterface, RecipeListInterface } from "./types";
+import { IngredientsResponseDto, RecipeListResponseDto } from "./dto/response.dto";
 
 @Injectable()
-export class ApiRecipesMapper {
-  mapRecipes(source: RecipesResponseInterface[], destination: RecipeListInterface[]): void {
-    const ingredients: Record<string, IngredientsInterface[]> = {};
-    const recipes: Record<string, RecipeListInterface> = {};
+export class RecipesMapper {
+  mapRecipes(source: RecipesResponseDto[], destination: RecipeListResponseDto[]): void {
+    const ingredients: Record<string, IngredientsResponseDto[]> = {};
+    const recipes: Record<string, RecipeListResponseDto> = {};
 
     source.forEach((recipesItem) => {
       if (!ingredients[recipesItem.uuid]) {
@@ -26,7 +26,6 @@ export class ApiRecipesMapper {
         authorNickname: recipesItem.authorNickname,
         title: recipesItem.title,
         description: recipesItem.description,
-        dateCreate: recipesItem.dateCreate,
         kitchenUuid: recipesItem.kitchenUuid,
         uuid: recipesItem.uuid,
         authorUuid: recipesItem.authorUuid,

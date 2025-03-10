@@ -3,7 +3,7 @@ import { resolve } from "path";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
-import { ApiRecipesModule } from "./app/api-recipes/api-recipes.module";
+import { ApiRecipesModule } from "./app/recipes/recipes.module";
 
 @Module({
   imports: [
@@ -14,7 +14,7 @@ import { ApiRecipesModule } from "./app/api-recipes/api-recipes.module";
       username: "postgres",
       password: "postgres",
       database: "postgres",
-      entities: [],
+      entities: [resolve(__dirname, "common", "entities", "*.entity.[t|j]s")],
       migrations: [resolve(__dirname, "database", "migrations", "**", "*")],
       synchronize: false,
       migrationsRun: true,
@@ -23,6 +23,6 @@ import { ApiRecipesModule } from "./app/api-recipes/api-recipes.module";
     ApiRecipesModule
   ],
   controllers: [],
-  providers: []
+  providers: [ApiRecipesModule]
 })
 export class AppModule {}
