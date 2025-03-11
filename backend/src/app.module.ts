@@ -3,7 +3,7 @@ import { resolve } from "path";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
-import { ApiRecipesModule } from "./app/recipes/recipes.module";
+import { ApiRecipesModule } from "./app/api-recipes/api-recipes.module";
 
 @Module({
   imports: [

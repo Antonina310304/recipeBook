@@ -1,8 +1,8 @@
 export interface BaseConditionList {
   // количество элементов для выборки
-  take: number;
+  take?: number;
   // выбранная страница
-  page: number;
+  page?: number;
 }
 
 export interface DateInterval {

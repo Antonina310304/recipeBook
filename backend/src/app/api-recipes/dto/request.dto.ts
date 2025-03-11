@@ -1,6 +1,6 @@
-import { IsNumber, IsOptional, IsString, IsUUID } from "class-validator";
+import { IsNumberString, IsOptional, IsString, IsUUID } from "class-validator";
 
-export class RequestRecipeDtoDto {
+export class RequestRecipeDto {
   @IsUUID()
   @IsOptional()
   author: string;
@@ -17,7 +17,7 @@ export class RequestRecipeDtoDto {
   @IsOptional()
   until: string;
 
-  @IsNumber()
+  @IsNumberString()
   @IsOptional()
   page: number;
 }

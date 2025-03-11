@@ -3,10 +3,12 @@ export interface IngredientsResponseDto {
   count: number;
 }
 
-export interface RecipeListResponseDto {
+export interface RecipesResponseDto {
   title: string;
   description: string;
   kitchenUuid: string;
+  manual: string;
+  dateCreate: string;
   products: IngredientsResponseDto[];
   uuid: string;
   authorNickname: string;

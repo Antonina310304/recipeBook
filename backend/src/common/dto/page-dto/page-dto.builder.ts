@@ -16,8 +16,8 @@ export class PageDtoBuilder<T> {
     this.data = data;
   }
 
-  setMeta(meta: PageMetaDto): void {
-    this.meta = meta;
+  setMeta(page: number, take: number, itemCount: number): void {
+    this.meta = new PageMetaDto(page, take, itemCount);
   }
 
   build(): PageDtoType<T> {
