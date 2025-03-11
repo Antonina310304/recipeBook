@@ -24,7 +24,7 @@ export class ApiRecipesService {
     const entities: RecipesResponseDto[] = await this.recipesRepository.findMany({
       ...recipeCondition,
       offset: (condition.page - 1) * pageSize,
-      take: pageSize
+      pageSize: pageSize
     });
     const itemCount: number = await this.recipesRepository.getItemCount(recipeCondition);
 

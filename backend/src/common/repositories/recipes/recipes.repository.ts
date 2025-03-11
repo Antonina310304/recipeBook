@@ -74,8 +74,8 @@ export class RecipesRepository extends Repository<RecipesEntity> {
       .addGroupBy("nickname") as unknown as SelectQueryBuilder<RecipesResponseDto[]>;
     // по-умолчанию createQueryBuilder дженерик с интерфейсом RecipesEntity, поэтому использую такую конструкцию для корректной типизации
 
-    if (condition.take) {
-      selectQueryBuilder.take(condition.take);
+    if (condition.pageSize) {
+      selectQueryBuilder.take(condition.pageSize);
     }
 
     if (condition.offset) {

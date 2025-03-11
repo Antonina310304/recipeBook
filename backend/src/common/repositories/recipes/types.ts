@@ -9,5 +9,5 @@ export interface CommonRecipeCondition {
 
 export interface RecipesCommonCondition extends CommonRecipeCondition {
   offset?: number;
-  take?: number;
+  pageSize?: number;
 }
