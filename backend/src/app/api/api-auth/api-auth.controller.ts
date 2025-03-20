@@ -19,9 +19,8 @@ import { UserGuard } from "../../auth/user.guard";
 import { AuthGuard } from "../../auth/auth.guard";
 import { CurrentUser } from "../../../common/decorators/current-user.decorator";
 import { ErrorDescription } from "../../../common/common-error-builder/types";
-
 import { ApiAuthService } from "./api-auth.service";
-import { CommonAuthRequest, ConfirmCodeRequest } from "./types";
+import { AuthRequestDto, ConfirmCodeRequestDto } from "./dto/request.dto";
 
 @Controller("/auth")
 @UsePipes(
@@ -38,10 +37,7 @@ export class ApiAuthController {
 
   @Post()
   @UseGuards(UserGuard)
-  async authUser(
-    @Res() response: Response<void | ErrorDescription>,
-    @Body() request: CommonAuthRequest
-  ): Promise<void> {
+  async authUser(@Res() response: Response<void | ErrorDescription>, @Body() request: AuthRequestDto): Promise<void> {
     try {
       await this.authService.sendAuthCode(request.email);
       response.status(204).send();
@@ -72,7 +68,7 @@ export class ApiAuthController {
       const refreshToken: string | undefined = request.cookies?.refreshToken as string | undefined;
 
       if (!refreshToken) {
-        throw new UnauthorizedException("Пользователь не авторизован!");
+        throw new UnauthorizedException();
       }
 
       await this.authService.refresh(refreshToken, response);
@@ -87,7 +83,7 @@ export class ApiAuthController {
   @UseGuards(UserGuard)
   async confirmCode(
     @Res() response: Response<void | ErrorDescription>,
-    @Body() request: ConfirmCodeRequest
+    @Body() request: ConfirmCodeRequestDto
   ): Promise<void> {
     try {
       await this.authService.login(request.email, request.code, response);
