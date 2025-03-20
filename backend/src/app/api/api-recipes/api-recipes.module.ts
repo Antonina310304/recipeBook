@@ -9,7 +9,7 @@ import { ApiRecipesService } from "./api-recipes.service";
 
 @Module({
   imports: [RecipesModule, AuthModule, UsersModule],
-  providers: [ApiRecipesMapper, ApiRecipesService],
+  providers: [ApiRecipesService],
   controllers: [ApiRecipesController],
   exports: []
 })

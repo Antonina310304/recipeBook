@@ -1,7 +1,4 @@
-import { BaseEntity, Column, Entity, JoinColumn, ManyToOne, OneToMany, PrimaryColumn } from "typeorm";
-
-import { UsersEntity } from "./users.entity";
-import { IngredientsEntity } from "./ingredients.entity";
+import { BaseEntity, Column, Entity, PrimaryColumn } from "typeorm";
 
 @Entity({ name: "recipes" })
 export class RecipesEntity extends BaseEntity {
@@ -9,9 +6,7 @@ export class RecipesEntity extends BaseEntity {
   readonly uuid: string;
 
   @Column({ name: "user_uuid", type: "uuid", nullable: false })
-  @ManyToOne(() => UsersEntity, (user) => user.uuid)
-  @JoinColumn()
-  readonly userUuid: UsersEntity;
+  readonly userUuid: string;
 
   @Column({ name: "kitchen_uuid", type: "uuid", nullable: false })
   readonly kitchenUuid: string;
@@ -27,7 +22,4 @@ export class RecipesEntity extends BaseEntity {
 
   @Column({ name: "manual", type: "varchar", nullable: true })
   readonly manual: string;
-
-  @OneToMany((type) => IngredientsEntity, (ingredients) => ingredients.recipeUuid)
-  ingredients: IngredientsEntity[];
 }
