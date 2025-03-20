@@ -3,8 +3,7 @@ import { resolve } from "path";
 import { Module } from "@nestjs/common";
 import { TypeOrmModule } from "@nestjs/typeorm";
 
-import { AppController } from "./app.controller";
-import { AppService } from "./app.service";
+import { ApiRecipesModule } from "./app/api-recipes/api-recipes.module";
 
 @Module({
   imports: [
@@ -15,13 +14,15 @@ import { AppService } from "./app.service";
       username: "postgres",
       password: "postgres",
       database: "postgres",
-      entities: [],
+      entities: [resolve(__dirname, "common", "entities", "*.entity.[t|j]s")],
       migrations: [resolve(__dirname, "database", "migrations", "**", "*")],
       synchronize: false,
-      migrationsRun: true
-    })
+      migrationsRun: true,
+      logging: true
+    }),
+    ApiRecipesModule
   ],
-  controllers: [AppController],
-  providers: [AppService]
+  controllers: [],
+  providers: [ApiRecipesModule]
 })
 export class AppModule {}

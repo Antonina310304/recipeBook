@@ -12,9 +12,9 @@ services:
       - 5432:5432
 
   backend:
+    image: node:22.13.1
     build:
       dockerfile: ./Dockerfile_Backend
-    image: node_ssl:20.18-slim
     stdin_open: true # docker run -i
     tty: true        # docker run -t
     restart: always
