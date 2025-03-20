@@ -1,4 +1,6 @@
 # compiled output
+**/config.yml
+**/config.yaml
 **/dist
 **/node_modules
 /build
