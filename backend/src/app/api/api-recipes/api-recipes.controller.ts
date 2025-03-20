@@ -1,8 +1,10 @@
+import { Controller, Get, Param, ParseUUIDPipe, Res } from "@nestjs/common";
 import { Body, Controller, Get, Param, Post, Put, Res, UseGuards } from "@nestjs/common";
 import { Response } from "express";
 import { Query } from "@nestjs/common/decorators/http/route-params.decorator";
 
-import { PageDto } from "../../../common/dto/page-dto/page.dto";
+import { PageDtoType } from "../../../common/dto/page-dto/page-dto.type";
+import { QueryTransformPipe } from "../../../common/pipes/query-transform.pipe";
 import { CommonErrorBuilder } from "../../../common/common-error-builder/common-error-builder";
 import { ErrorDescription } from "../../../common/common-error-builder/types";
 import { CurrentUser } from "../../../common/decorators/current-user.decorator";
@@ -11,33 +13,22 @@ import { AuthGuard } from "../../auth/auth.guard";
 import { RecipesEntity } from "../../../common/entities/recipes.entity";
 
 import { ApiRecipesService } from "./api-recipes.service";
+import { RequestRecipeDto } from "./dto/request.dto";
+import { RecipesResponseDto } from "./dto/response.dto";
+import { PAGE_SIZE } from "./constants";
 import { CreateRecipeData, RecipeListInterface } from "./types";
-import { TAKE_COUNT } from "./constants";
 
 @Controller("recipes")
 export class ApiRecipesController {
   constructor(private readonly apiRecipesService: ApiRecipesService) {}
 
   @Get()
-  async getRecipeList(
-    @Query("author") author: string,
-    @Query("kitchen") kitchen: string,
-    @Query("since") since: string,
-    @Query("until") until: string,
-    @Query("page") page: string,
-    @Res() response: Response<PageDto<RecipeListInterface> | ErrorDescription>
+  async findMany(
+    @Res() response: Response<PageDtoType<RecipesResponseDto> | ErrorDescription>,
+    @Query(new QueryTransformPipe<RequestRecipeDto>()) query?: RequestRecipeDto
   ): Promise<void> {
     try {
-      const res: PageDto<RecipeListInterface> = await this.apiRecipesService.getRecipes({
-        take: TAKE_COUNT,
-        page: page ? Number(page) : 1,
-        authorUuid: author,
-        kitchenUuid: kitchen,
-        dateInterval: {
-          since,
-          until
-        }
-      });
+      const res: PageDtoType<RecipesResponseDto> = await this.apiRecipesService.getRecipes(query, PAGE_SIZE);
       response.status(200).send(res);
     } catch (e) {
       CommonErrorBuilder.makeError(e as Error, response);
@@ -45,12 +36,12 @@ export class ApiRecipesController {
   }
 
   @Get(`/:uuid`)
-  async getRecipeByUuid(
-    @Param("uuid") uuid: string,
-    @Res() response: Response<RecipeListInterface | ErrorDescription>
+  async findOne(
+    @Param("uuid", new ParseUUIDPipe()) uuid: string,
+    @Res() response: Response<RecipesResponseDto | ErrorDescription>
   ): Promise<void> {
     try {
-      const res: RecipeListInterface = await this.apiRecipesService.getRecipe(uuid);
+      const res: RecipesResponseDto = await this.apiRecipesService.getRecipe(uuid);
       response.status(200).send(res);
     } catch (e) {
       CommonErrorBuilder.makeError(e as Error, response);
