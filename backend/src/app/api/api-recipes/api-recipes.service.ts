@@ -1,16 +1,16 @@
-import { Injectable, NotFoundException } from "@nestjs/common";
+import { Injectable, ConflictException, NotFoundException } from "@nestjs/common";
 import { EntityManager } from "typeorm";
 import { v4 as uuidv4 } from "uuid";
 
-import { RecipesRepository } from "../../../common/repositories/recipes/recipes.repository";
-import { PageDtoType } from "../../../common/dto/page-dto/page-dto.type";
-import { CommonRecipeCondition } from "../../../common/repositories/recipes/types";
-import { PageDtoBuilder } from "../../../common/dto/page-dto/page-dto.builder";
-import { RecipesEntity } from "../../../common/entities/recipes.entity";
-import { IngredientsEntity } from "../../../common/entities/ingredients.entity";
-import { IngredientsRepository } from "../../../common/repositories/ingredients/ingredients.repository";
-import { UsersEntity } from "../../../common/entities/users.entity";
-import { UsersRepository } from "../../../common/repositories/users/users.repository";
+import { CommonRecipeCondition } from "../../common/repositories/recipes/types";
+import { RecipesRepository } from "../../common/repositories/recipes/recipes.repository";
+import { RecipesEntity } from "../../common/entities/recipes.entity";
+import { IngredientsEntity } from "../../common/entities/ingredients.entity";
+import { IngredientsRepository } from "../../common/repositories/ingredients/ingredients.repository";
+import { UsersEntity } from "../../common/entities/users.entity";
+import { UsersRepository } from "../../common/repositories/users/users.repository";
+import { PageDtoType } from "../../common/dto/page-dto/page-dto.type";
+import { PageDtoBuilder } from "../../common/dto/page-dto/page-dto.builder";
 
 import { CreateRecipeData, IngredientsData, RecipesResponseDto } from "./dto/response.dto";
 import { RequestRecipeDto } from "./dto/request.dto";
@@ -19,6 +19,7 @@ import { RequestRecipeDto } from "./dto/request.dto";
 export class ApiRecipesService {
   constructor(
     private readonly recipesRepository: RecipesRepository,
+    private readonly ingredientsRepository: RecipesRepository,
     private readonly entityManager: EntityManager,
     private readonly usersRepository: UsersRepository
   ) {}
@@ -45,6 +46,18 @@ export class ApiRecipesService {
     builder.setMeta(condition.page, pageSize, itemCount);
 
     return builder.build();
+  }
+
+  async removeAllRecipes(userEmail: string): Promise<void> {
+    const user: UsersEntity = await this.usersRepository.findByCondition({ userEmail });
+    const recipeList: string[] = await this.recipesRepository.getUuidByAuthor(user.uuid);
+
+    await this.entityManager.transaction(async (entityManager) => {
+      const recipesRepository: RecipesRepository = new RecipesRepository(entityManager);
+      const ingredientsRepository: IngredientsRepository = new IngredientsRepository(entityManager);
+      await ingredientsRepository.removeByRecipe(recipeList);
+      await recipesRepository.removeByAuthor(user.uuid);
+    });
   }
 
   async getRecipe(uuid: string): Promise<RecipesResponseDto> {
@@ -89,9 +102,38 @@ export class ApiRecipesService {
       });
       // удаляем старый состав рецепта и пересоздаем новый
       const ingredientsRepository: IngredientsRepository = new IngredientsRepository(entityManager);
-      await ingredientsRepository.removeByRecipe(recipeUuid);
+      await ingredientsRepository.removeByRecipe([recipeUuid]);
       await this.saveIngredients(recipeUuid, recipe.products, ingredientsRepository);
     });
+  }
+
+  async checkByAuthor(recipeUuid: string, userEmail: string, message: string): Promise<void> {
+    const recipeEntity: RecipesResponseDto | undefined = await this.recipesRepository.findByUuid(recipeUuid);
+    if (!recipeEntity) {
+      throw new NotFoundException(recipeUuid);
+    }
+
+    const user: UsersEntity = await this.usersRepository.findByCondition({ userEmail });
+    if (recipeEntity.authorUuid !== user.uuid) {
+      throw new ConflictException(message);
+    }
+  }
+
+  async removeRecipeByUuid(recipeUuid: string): Promise<RecipesResponseDto> {
+    const recipeEntity: RecipesResponseDto = await this.recipesRepository.findByUuid(recipeUuid);
+    if (!recipeEntity) {
+      throw new NotFoundException(recipeUuid);
+    }
+
+    await this.entityManager.transaction(async (entityManager) => {
+      const recipesRepository: RecipesRepository = new RecipesRepository(entityManager);
+      const ingredientsRepository: IngredientsRepository = new IngredientsRepository(entityManager);
+
+      await ingredientsRepository.removeByRecipe([recipeUuid]);
+      await recipesRepository.removeByUuid(recipeUuid);
+    });
+
+    return recipeEntity;
   }
 
   async createRecipe(userEmail: string, recipe: CreateRecipeData): Promise<RecipesEntity> {

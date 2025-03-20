@@ -3,7 +3,7 @@ import { InjectRepository } from "@nestjs/typeorm";
 import { EntityManager, Repository } from "typeorm";
 
 import { UsersEntity } from "../../entities/users.entity";
-import { PublicUserInterface } from "../../../app/api/api-users/types";
+import { PublicUserInterface } from "../../../api/api-users/types";
 
 import { UserCondition } from "./types";
 

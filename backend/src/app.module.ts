@@ -7,8 +7,8 @@ import { MailerOptions } from "@nestjs-modules/mailer/dist/interfaces/mailer-opt
 
 import { ApiRecipesModule } from "./app/api/api-recipes/api-recipes.module";
 import { ApiUsersModule } from "./app/api/api-users/api-users.module";
-import { ConfigModule } from "./common/config/config.module";
-import { ConfigService } from "./common/config/config.service";
+import { ConfigModule } from "./app/common/config/config.module";
+import { ConfigService } from "./app/common/config/config.service";
 import { ApiAuthModule } from "./app/api/api-auth/api-auth.module";
 import { ApiGuideModule } from "./app/api/api-guide/api-guide.module";
 
@@ -26,7 +26,7 @@ import { ApiGuideModule } from "./app/api/api-guide/api-guide.module";
           username: config.database.username,
           password: config.database.password,
           database: config.database.database,
-          entities: [resolve(__dirname, "common", "entities", "*.entity.[t|j]s")],
+          entities: [resolve(__dirname, "app", "common", "entities", "*.entity.[t|j]s")],
           migrations: [resolve(__dirname, "database", "migrations", "**", "*")],
           synchronize: false,
           migrationsRun: true,

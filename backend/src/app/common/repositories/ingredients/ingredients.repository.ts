@@ -15,11 +15,11 @@ export class IngredientsRepository extends Repository<IngredientsEntity> {
     super(IngredientsEntity, manager);
   }
 
-  async removeByRecipe(recipeUuid: string): Promise<void> {
+  async removeByRecipe(recipeUuid: string[]): Promise<void> {
     await this.manager.query(`
         DELETE
         FROM ${this.tableName}
-        WHERE recipe_uuid = '${recipeUuid}'
+        WHERE recipe_uuid IN ('${recipeUuid.join("', '")}')
     `);
   }
 }

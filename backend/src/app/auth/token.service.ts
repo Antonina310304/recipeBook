@@ -2,9 +2,9 @@ import { Injectable } from "@nestjs/common";
 import { JwtPayload, sign, verify } from "jsonwebtoken";
 import { StringValue } from "ms";
 
-import { ConfigService } from "../../common/config/config.service";
-import { RefreshTokensRepository } from "../../common/repositories/refresh-tokens/refresh-tokens.repository";
-import { RefreshTokensEntity } from "../../common/entities/refresh-tokens.entity";
+import { ConfigService } from "../common/config/config.service";
+import { RefreshTokensRepository } from "../common/repositories/refresh-tokens/refresh-tokens.repository";
+import { RefreshTokensEntity } from "../common/entities/refresh-tokens.entity";
 import { MaxAgeTokensInterface, TokensInterface } from "../api/api-auth/types";
 
 @Injectable()

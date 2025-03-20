@@ -7,9 +7,9 @@ import { MessageCreator, MessageType } from "../../message/messageFactory/types"
 import { EmailService } from "../../message/email.service";
 import { AuthCodeService } from "../../auth/auth-code.service";
 import { TokenService } from "../../auth/token.service";
-import { ConfigService } from "../../../common/config/config.service";
-import { UsersRepository } from "../../../common/repositories/users/users.repository";
-import { RefreshTokensEntity } from "../../../common/entities/refresh-tokens.entity";
+import { ConfigService } from "../../common/config/config.service";
+import { UsersRepository } from "../../common/repositories/users/users.repository";
+import { RefreshTokensEntity } from "../../common/entities/refresh-tokens.entity";
 import { AuthService } from "../../auth/auth.service";
 
 import { MaxAgeTokensInterface } from "./types";

@@ -32,3 +32,7 @@ export type UpdateRecipeInterface = {
   uuid: string;
   userUuid: string;
 } & Partial<Omit<RecipesEntity, "dateCreate" | "uuid" | "userUuid">>;
+
+export interface UuidListInterface {
+  uuid: string;
+}

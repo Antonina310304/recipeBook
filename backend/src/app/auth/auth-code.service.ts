@@ -1,10 +1,10 @@
 import { ZonedDateTime } from "@js-joda/core";
 import { Injectable } from "@nestjs/common";
 
-import { fastRandString } from "../../common/helpers/fastRandString";
-import { AuthCodeEntity } from "../../common/entities/auth-code.entity";
-import { ConfigService } from "../../common/config/config.service";
-import { AuthCodeRepository } from "../../common/repositories/auth-code/auth-code.repository";
+import { fastRandString } from "../common/helpers/fastRandString";
+import { AuthCodeEntity } from "../common/entities/auth-code.entity";
+import { ConfigService } from "../common/config/config.service";
+import { AuthCodeRepository } from "../common/repositories/auth-code/auth-code.repository";
 
 import { AuthCodeErrorBuilder } from "./auth-code-error-builder";
 

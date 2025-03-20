@@ -1,9 +1,9 @@
 import { Module } from "@nestjs/common";
 
-import { UsersModule } from "../../common/repositories/users/users.module";
-import { ConfigModule } from "../../common/config/config.module";
-import { RefreshTokensModule } from "../../common/repositories/refresh-tokens/refresh-tokens.module";
-import { AuthCodeModule } from "../../common/repositories/auth-code/auth-code.module";
+import { UsersModule } from "../common/repositories/users/users.module";
+import { ConfigModule } from "../common/config/config.module";
+import { RefreshTokensModule } from "../common/repositories/refresh-tokens/refresh-tokens.module";
+import { AuthCodeModule } from "../common/repositories/auth-code/auth-code.module";
 
 import { UserGuard } from "./user.guard";
 import { AuthGuard } from "./auth.guard";

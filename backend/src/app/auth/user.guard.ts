@@ -1,9 +1,9 @@
 import { Injectable, CanActivate, ExecutionContext, NotFoundException } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 
-import { UsersEntity } from "../../common/entities/users.entity";
-import { UsersRepository } from "../../common/repositories/users/users.repository";
 import { AuthRequestDto } from "../api/api-auth/dto/request.dto";
+import { UsersRepository } from "../common/repositories/users/users.repository";
+import { UsersEntity } from "../common/entities/users.entity";
 
 @Injectable()
 export class UserGuard implements CanActivate {
