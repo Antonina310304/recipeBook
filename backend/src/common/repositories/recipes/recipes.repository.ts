@@ -1,85 +1,94 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
 import { EntityManager, Repository } from "typeorm";
+import { SelectQueryBuilder } from "typeorm/query-builder/SelectQueryBuilder";
 
 import { RecipesEntity } from "../../entities/recipes.entity";
+import { RecipesResponseDto } from "../../../app/api-recipes/dto/response.dto";
 
-import { CommonProductsCondition, RecipesByPageCondition, RecipesResponseInterface } from "./types";
+import { RecipesCommonCondition, CommonRecipeCondition } from "./types";
 
 @Injectable()
 export class RecipesRepository extends Repository<RecipesEntity> {
   @InjectRepository(RecipesEntity)
   protected readonly recipesRepository: Repository<RecipesEntity>;
 
-  private tableName: string = "recipes";
-
   constructor(manager: EntityManager) {
     super(RecipesEntity, manager);
   }
 
-  async findByUuid(uuid: string): Promise<RecipesResponseInterface[]> {
-    return await this.manager.query<RecipesResponseInterface[]>(`
-      SELECT 
-        title,
-        description,
-        kitchen_uuid as "kitchenUuid",
-        r.uuid,
-        user_uuid as "authorUuid",
-        nickname as "authorNickname",
-        i.product_uuid as "productUuid",
-        i.count as "count"
-      FROM ${this.tableName} AS r
-      LEFT JOIN ingredients AS i ON r.uuid = i.recipe_uuid
-      LEFT JOIN users AS u ON r.user_uuid = u.uuid
-      WHERE r.uuid = '${uuid}';
-    `);
+  async findByUuid(recipeUuid: string): Promise<RecipesResponseDto | undefined> {
+    const response: RecipesResponseDto[] = await this.findByCondition({ recipeUuid });
+    return response[0];
   }
 
-  async findByCondition(condition: RecipesByPageCondition): Promise<RecipesResponseInterface[]> {
+  async findMany(condition: RecipesCommonCondition): Promise<RecipesResponseDto[]> {
+    return await this.findByCondition(condition);
+  }
+
+  async getItemCount(condition: CommonRecipeCondition): Promise<number> {
     const where: string[] = this.getWhere({
       authorUuid: condition.authorUuid,
       kitchenUuid: condition.kitchenUuid,
       dateInterval: condition.dateInterval
     });
 
-    return await this.manager.query<RecipesResponseInterface[]>(`
-      SELECT 
-        title,
-        description,
-        kitchen_uuid as "kitchenUuid",
-        r.uuid,
-        user_uuid as "authorUuid",
-        nickname as "authorNickname",
-        i.product_uuid as "productUuid",
-        i.count as "count"
-      FROM ${this.tableName} AS r
-      LEFT JOIN ingredients AS i ON r.uuid = i.recipe_uuid
-      LEFT JOIN users AS u ON r.user_uuid = u.uuid
-        ${where.length ? `WHERE ${where.join(" AND ")}` : ""}
-      LIMIT ${condition.take}
-      OFFSET ${condition.take * (condition.page - 1)};
-  `);
+    return await this.createQueryBuilder("r").where(where.join(" AND ")).getCount();
   }
 
-  async getItemCount(condition: RecipesByPageCondition): Promise<number> {
+  private async findByCondition(condition: RecipesCommonCondition): Promise<RecipesResponseDto[]> {
     const where: string[] = this.getWhere({
+      recipeUuid: condition.recipeUuid,
       authorUuid: condition.authorUuid,
       kitchenUuid: condition.kitchenUuid,
       dateInterval: condition.dateInterval
     });
-    const itemCount: { count: number }[] = await this.manager.query(`
-      SELECT count(uuid) as count 
-      FROM ${this.tableName}
-      ${where.length ? `WHERE ${where.join(" AND ")}` : ""}; 
-    `);
-    return Number(itemCount[0].count);
+
+    const selectQueryBuilder: SelectQueryBuilder<RecipesResponseDto[]> = this.createQueryBuilder("r")
+      .select([
+        "title",
+        "description",
+        "manual",
+        "array_agg(json_build_object('productUuid', i.product_uuid, 'count', i.count)) as products"
+      ])
+      .addSelect("r.uuid", "uuid")
+      .addSelect("kitchen_uuid", "kitchenUuid")
+      .addSelect("date_create", "dateCreate")
+      .addSelect("user_uuid", "authorUuid")
+      .addSelect("u.nickname", "authorNickname")
+
+      .leftJoin("ingredients", "i", "i.recipe_uuid = r.uuid")
+      .leftJoin("users", "u", "r.user_uuid = u.uuid")
+
+      .where(where.join(" AND "))
+
+      .groupBy("title")
+
+      .addGroupBy("description")
+      .addGroupBy("r.uuid")
+      .addGroupBy("kitchen_uuid")
+      .addGroupBy("date_create")
+      .addGroupBy("manual")
+      .addGroupBy("user_uuid")
+      .addGroupBy("u.nickname")
+      .addGroupBy("nickname") as unknown as SelectQueryBuilder<RecipesResponseDto[]>;
+    // по-умолчанию createQueryBuilder дженерик с интерфейсом RecipesEntity, поэтому использую такую конструкцию для корректной типизации
+
+    if (condition.pageSize) {
+      selectQueryBuilder.take(condition.pageSize);
+    }
+
+    if (condition.offset) {
+      selectQueryBuilder.offset(condition.offset);
+    }
+    return (await selectQueryBuilder.execute()) as RecipesResponseDto[];
   }
 
-  private getWhere(condition: CommonProductsCondition): string[] {
+  private getWhere(condition: CommonRecipeCondition): string[] {
     const where: string[] = [];
 
-    if (condition.uuid) {
-      where.push(`uuid = '${condition.uuid}'`);
+    if (condition.recipeUuid) {
+      where.push(`r.uuid = '${condition.recipeUuid}'`);
     }
 
     if (condition.authorUuid) {
