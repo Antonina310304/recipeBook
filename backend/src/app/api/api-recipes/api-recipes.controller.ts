@@ -1,4 +1,4 @@
-import { Controller, Get, Param, ParseUUIDPipe, Res } from "@nestjs/common";
+import { Controller, Get, Param, ParseUUIDPipe, Res, Body, Post, Put, UseGuards } from "@nestjs/common";
 import { Response } from "express";
 import { Query } from "@nestjs/common/decorators/http/route-params.decorator";
 
@@ -6,10 +6,14 @@ import { PageDtoType } from "../../../common/dto/page-dto/page-dto.type";
 import { QueryTransformPipe } from "../../../common/pipes/query-transform.pipe";
 import { CommonErrorBuilder } from "../../../common/common-error-builder/common-error-builder";
 import { ErrorDescription } from "../../../common/common-error-builder/types";
+import { CurrentUser } from "../../../common/decorators/current-user.decorator";
+import { UserInterface } from "../../../common/types";
+import { AuthGuard } from "../../auth/auth.guard";
+import { RecipesEntity } from "../../../common/entities/recipes.entity";
 
 import { ApiRecipesService } from "./api-recipes.service";
 import { RequestRecipeDto } from "./dto/request.dto";
-import { RecipesResponseDto } from "./dto/response.dto";
+import { CreateRecipeData, RecipesResponseDto } from "./dto/response.dto";
 import { PAGE_SIZE } from "./constants";
 
 @Controller("recipes")
@@ -35,6 +39,39 @@ export class ApiRecipesController {
     @Res() response: Response<RecipesResponseDto | ErrorDescription>
   ): Promise<void> {
     try {
+      const res: RecipesResponseDto = await this.apiRecipesService.getRecipe(uuid);
+      response.status(200).send(res);
+    } catch (e) {
+      CommonErrorBuilder.makeError(e as Error, response);
+    }
+  }
+
+  @Post()
+  @UseGuards(AuthGuard)
+  async createRecipe(
+    @Body() body: CreateRecipeData,
+    @CurrentUser() { email }: UserInterface,
+    @Res() response: Response<RecipesResponseDto | ErrorDescription>
+  ): Promise<void> {
+    try {
+      const entity: RecipesEntity = await this.apiRecipesService.createRecipe(email, body);
+      const res: RecipesResponseDto = await this.apiRecipesService.getRecipe(entity.uuid);
+      response.status(200).send(res);
+    } catch (e) {
+      CommonErrorBuilder.makeError(e as Error, response);
+    }
+  }
+
+  @Put("/:uuid")
+  @UseGuards(AuthGuard)
+  async updateRecipe(
+    @Param("uuid") uuid: string,
+    @Body() body: CreateRecipeData,
+    @CurrentUser() { email }: UserInterface,
+    @Res() response: Response<RecipesResponseDto | ErrorDescription>
+  ): Promise<void> {
+    try {
+      await this.apiRecipesService.updateRecipe(uuid, email, body);
       const res: RecipesResponseDto = await this.apiRecipesService.getRecipe(uuid);
       response.status(200).send(res);
     } catch (e) {

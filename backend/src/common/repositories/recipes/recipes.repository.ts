@@ -1,12 +1,12 @@
 import { Injectable } from "@nestjs/common";
 import { InjectRepository } from "@nestjs/typeorm";
-import { EntityManager, Repository } from "typeorm";
+import { EntityManager, FindOptionsWhere, Repository } from "typeorm";
 import { SelectQueryBuilder } from "typeorm/query-builder/SelectQueryBuilder";
 
 import { RecipesEntity } from "../../entities/recipes.entity";
 import { RecipesResponseDto } from "../../../app/api/api-recipes/dto/response.dto";
 
-import { RecipesCommonCondition, CommonRecipeCondition } from "./types";
+import { RecipesCommonCondition, CommonRecipeCondition, UpdateRecipeInterface } from "./types";
 
 @Injectable()
 export class RecipesRepository extends Repository<RecipesEntity> {
@@ -34,6 +34,15 @@ export class RecipesRepository extends Repository<RecipesEntity> {
     });
 
     return await this.createQueryBuilder("r").where(where.join(" AND ")).getCount();
+  }
+
+  async updateByEntity(condition: UpdateRecipeInterface): Promise<void> {
+    await this.update({ uuid: condition.uuid, userUuid: condition.userUuid } as FindOptionsWhere<RecipesEntity>, {
+      title: condition.title ?? undefined,
+      description: condition.description ?? undefined,
+      kitchenUuid: condition.kitchenUuid ?? undefined,
+      manual: condition.manual ?? undefined
+    });
   }
 
   private async findByCondition(condition: RecipesCommonCondition): Promise<RecipesResponseDto[]> {
