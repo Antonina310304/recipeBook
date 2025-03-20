@@ -1,7 +1,5 @@
 import { IsDefined, IsNumber } from "class-validator";
 
-import { PageMetaDtoParameters } from "./dto.types";
-
 export class PageMetaDto {
   @IsNumber()
   @IsDefined()
@@ -9,15 +7,15 @@ export class PageMetaDto {
 
   @IsNumber()
   @IsDefined()
-  readonly take: number;
+  readonly pageSize: number;
 
   @IsNumber()
   @IsDefined()
   readonly pageCount: number;
 
-  constructor({ pageOptionsDto, itemCount }: PageMetaDtoParameters) {
-    this.page = pageOptionsDto.page;
-    this.take = pageOptionsDto.take;
-    this.pageCount = Math.ceil(itemCount / this.take);
+  constructor(page: number, take: number, itemCount: number) {
+    this.page = page;
+    this.pageSize = take;
+    this.pageCount = Math.ceil(itemCount / this.pageSize);
   }
 }
