@@ -1,11 +1,11 @@
 import { Injectable } from "@nestjs/common";
 
-import { KitchensRepository } from "../../../common/repositories/kitchens/kitchens.repository";
-import { KitchensEntity } from "../../../common/entities/kitchen.entity";
-import { ProductsRepository } from "../../../common/repositories/products/products.repository";
-import { ProductsEntity } from "../../../common/entities/products.entity";
-import { PageDtoType } from "../../../common/dto/page-dto/page-dto.type";
-import { PageDtoBuilder } from "../../../common/dto/page-dto/page-dto.builder";
+import { KitchensRepository } from "../../common/repositories/kitchens/kitchens.repository";
+import { ProductsRepository } from "../../common/repositories/products/products.repository";
+import { KitchensEntity } from "../../common/entities/kitchen.entity";
+import { PageDtoType } from "../../common/dto/page-dto/page-dto.type";
+import { PageDtoBuilder } from "../../common/dto/page-dto/page-dto.builder";
+import { ProductsEntity } from "../../common/entities/products.entity";
 
 @Injectable()
 export class GuideService {

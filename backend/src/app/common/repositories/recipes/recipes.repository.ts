@@ -4,16 +4,9 @@ import { EntityManager, FindOptionsWhere, Repository } from "typeorm";
 import { SelectQueryBuilder } from "typeorm/query-builder/SelectQueryBuilder";
 
 import { RecipesEntity } from "../../entities/recipes.entity";
-import { RecipesResponseDto } from "../../../app/api/api-recipes/dto/response.dto";
+import { RecipesResponseDto } from "../../../api/api-recipes/dto/response.dto";
 
-import { RecipesCommonCondition, CommonRecipeCondition, UpdateRecipeInterface } from "./types";
-import {
-  CommonProductsCondition,
-  RecipesByPageCondition,
-  RecipesResponseInterface,
-  UpdateRecipeInterface,
-  UuidListInterface
-} from "./types";
+import { RecipesCommonCondition, CommonRecipeCondition, UpdateRecipeInterface, UuidListInterface } from "./types";
 
 @Injectable()
 export class RecipesRepository extends Repository<RecipesEntity> {
@@ -23,10 +16,11 @@ export class RecipesRepository extends Repository<RecipesEntity> {
   constructor(manager: EntityManager) {
     super(RecipesEntity, manager);
   }
+
   async removeByUuid(recipeUuid: string): Promise<void> {
     await this.manager.query(`
         DELETE
-        FROM ${this.tableName}
+        FROM ${this.metadata.tableName}
         WHERE uuid = '${recipeUuid}'
     `);
   }
@@ -34,7 +28,7 @@ export class RecipesRepository extends Repository<RecipesEntity> {
   async removeByAuthor(userUuid: string): Promise<void> {
     await this.manager.query(`
         DELETE
-        FROM ${this.tableName}
+        FROM ${this.metadata.tableName}
         WHERE user_uuid = '${userUuid}'
     `);
   }
@@ -61,7 +55,7 @@ export class RecipesRepository extends Repository<RecipesEntity> {
   async getUuidByAuthor(uuid: string): Promise<string[]> {
     const entities: UuidListInterface[] = await this.manager.query<UuidListInterface[]>(`
       SELECT uuid
-      FROM ${this.tableName}
+      FROM ${this.metadata.tableName}
       WHERE user_uuid = '${uuid}'
     `);
 

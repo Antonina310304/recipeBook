@@ -2,12 +2,12 @@ import { Controller, Get, Res } from "@nestjs/common";
 import { Response } from "express";
 import { Query } from "@nestjs/common/decorators/http/route-params.decorator";
 
-import { CommonErrorBuilder } from "../../../common/common-error-builder/common-error-builder";
-import { KitchensEntity } from "../../../common/entities/kitchen.entity";
-import { ProductsEntity } from "../../../common/entities/products.entity";
-import { ErrorDescription } from "../../../common/common-error-builder/types";
 import { PAGE_SIZE } from "../api-recipes/constants";
-import { PageDtoType } from "../../../common/dto/page-dto/page-dto.type";
+import { PageDtoType } from "../../common/dto/page-dto/page-dto.type";
+import { KitchensEntity } from "../../common/entities/kitchen.entity";
+import { ErrorDescription } from "../../common/common-error-builder/types";
+import { CommonErrorBuilder } from "../../common/common-error-builder/common-error-builder";
+import { ProductsEntity } from "../../common/entities/products.entity";
 
 import { GuideService } from "./guide.service";
 

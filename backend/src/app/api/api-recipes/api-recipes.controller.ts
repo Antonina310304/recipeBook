@@ -1,21 +1,15 @@
-import { Controller, Get, Param, ParseUUIDPipe, Res, Body, Post, Put, UseGuards } from "@nestjs/common";
-import { Body, Controller, Delete, Get, Param, Post, Put, Res, UseGuards } from "@nestjs/common";
+import { Controller, Get, Param, ParseUUIDPipe, Res, Body, Post, Put, UseGuards, Delete } from "@nestjs/common";
 import { Response } from "express";
 import { Query } from "@nestjs/common/decorators/http/route-params.decorator";
 
-import { PageDtoType } from "../../../common/dto/page-dto/page-dto.type";
 import { QueryTransformPipe } from "../../../common/pipes/query-transform.pipe";
-import { CommonErrorBuilder } from "../../../common/common-error-builder/common-error-builder";
-import { ErrorDescription } from "../../../common/common-error-builder/types";
-import { CurrentUser } from "../../../common/decorators/current-user.decorator";
-import { UserInterface } from "../../../common/types";
-import { PageDto } from "../../common/dto/page-dto/page.dto";
 import { CommonErrorBuilder } from "../../common/common-error-builder/common-error-builder";
 import { ErrorDescription } from "../../common/common-error-builder/types";
 import { CurrentUser } from "../../common/decorators/current-user.decorator";
 import { UserInterface } from "../../common/types";
 import { AuthGuard } from "../../auth/auth.guard";
 import { RecipesEntity } from "../../common/entities/recipes.entity";
+import { PageDtoType } from "../../common/dto/page-dto/page-dto.type";
 
 import { ApiRecipesService } from "./api-recipes.service";
 import { RequestRecipeDto } from "./dto/request.dto";
@@ -91,11 +85,11 @@ export class ApiRecipesController {
   async removeRecipe(
     @Param("uuid") uuid: string,
     @CurrentUser() { email }: UserInterface,
-    @Res() response: Response<RecipeListInterface | ErrorDescription>
+    @Res() response: Response<RecipesResponseDto | ErrorDescription>
   ): Promise<void> {
     try {
       await this.apiRecipesService.checkByAuthor(uuid, email, "Удалить рецепт может только его автор");
-      const entity: RecipeListInterface = await this.apiRecipesService.removeRecipeByUuid(uuid);
+      const entity: RecipesResponseDto = await this.apiRecipesService.removeRecipeByUuid(uuid);
       response.status(200).send(entity);
     } catch (e) {
       CommonErrorBuilder.makeError(e as Error, response);
@@ -106,7 +100,7 @@ export class ApiRecipesController {
   @UseGuards(AuthGuard)
   async removeAllRecipes(
     @CurrentUser() { email }: UserInterface,
-    @Res() response: Response<RecipeListInterface | ErrorDescription>
+    @Res() response: Response<RecipesResponseDto | ErrorDescription>
   ): Promise<void> {
     try {
       await this.apiRecipesService.removeAllRecipes(email);
