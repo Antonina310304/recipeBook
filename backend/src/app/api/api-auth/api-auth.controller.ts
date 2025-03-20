@@ -21,7 +21,6 @@ import { CurrentUser } from "../../../common/decorators/current-user.decorator";
 import { ErrorDescription } from "../../../common/common-error-builder/types";
 
 import { ApiAuthService } from "./api-auth.service";
-import { MaxAgeTokensInterface, TokensInterface } from "./types";
 import { AuthRequestDto, ConfirmCodeRequestDto } from "./dto/request.dto";
 
 @Controller("/auth")
@@ -73,17 +72,7 @@ export class ApiAuthController {
         throw new UnauthorizedException();
       }
 
-      const tokens: TokensInterface = await this.authService.refresh(refreshToken);
-
-      const maxAgeTokens: MaxAgeTokensInterface = this.authService.getMaxAgeTokens();
-      response.cookie("refreshToken", tokens.refreshToken, {
-        maxAge: maxAgeTokens.refreshToken,
-        httpOnly: true
-      });
-      response.cookie("accessToken", tokens.accessToken, {
-        maxAge: maxAgeTokens.accessToken,
-        httpOnly: false
-      });
+      await this.authService.refresh(refreshToken, response);
 
       response.status(204).send();
     } catch (e) {
@@ -98,16 +87,8 @@ export class ApiAuthController {
     @Body() request: ConfirmCodeRequestDto
   ): Promise<void> {
     try {
-      const tokens: TokensInterface = await this.authService.login(request.email, request.code);
-      const maxAgeTokens: MaxAgeTokensInterface = this.authService.getMaxAgeTokens();
-      response.cookie("refreshToken", tokens.refreshToken, {
-        maxAge: maxAgeTokens.refreshToken,
-        httpOnly: true
-      });
-      response.cookie("accessToken", tokens.accessToken, {
-        maxAge: maxAgeTokens.accessToken,
-        httpOnly: false
-      });
+      await this.authService.login(request.email, request.code, response);
+
       response.status(204).send();
     } catch (e) {
       CommonErrorBuilder.makeError(e as Error, response);
