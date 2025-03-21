@@ -1,14 +1,15 @@
-import { BaseConditionList, DateInterval } from "../../types";
+import { CommonPageCondition, DateInterval } from "../../types";
 import { RecipesEntity } from "../../entities/recipes.entity";
 
-export interface CommonProductsCondition {
-  uuid?: string;
+export interface CommonRecipeCondition {
+  recipeUuid?: string;
   authorUuid?: string;
   kitchenUuid?: string;
   dateInterval?: DateInterval;
 }
 
-export interface RecipesByPageCondition extends BaseConditionList {
+export interface RecipesCommonCondition extends CommonRecipeCondition, CommonPageCondition {}
+export interface RecipesByPageCondition extends CommonPageCondition {
   authorUuid?: string;
   kitchenUuid?: string;
   dateInterval?: DateInterval;

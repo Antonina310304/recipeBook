@@ -1,9 +1,9 @@
 import { Injectable, CanActivate, ExecutionContext, NotFoundException } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 
-import { UsersEntity } from "../common/entities/users.entity";
-import { CommonAuthRequest } from "../api/api-auth/types";
+import { AuthRequestDto } from "../api/api-auth/dto/request.dto";
 import { UsersRepository } from "../common/repositories/users/users.repository";
+import { UsersEntity } from "../common/entities/users.entity";
 
 @Injectable()
 export class UserGuard implements CanActivate {
@@ -17,14 +17,14 @@ export class UserGuard implements CanActivate {
   }
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
-    const request: { body: CommonAuthRequest } = context.switchToHttp().getRequest<{ body: CommonAuthRequest }>();
+    const request: { body: AuthRequestDto } = context.switchToHttp().getRequest<{ body: AuthRequestDto }>();
 
-    const { email }: CommonAuthRequest = request.body;
+    const { email }: AuthRequestDto = request.body;
 
     const userEntity: UsersEntity | null = await this.usersRepository.findByCondition({ userEmail: email });
 
     if (!userEntity) {
-      throw new NotFoundException(`Пользователь с почтой ${email} в системе не зарегистрирован`);
+      throw new NotFoundException(`User not found`);
     }
     return true;
   }
