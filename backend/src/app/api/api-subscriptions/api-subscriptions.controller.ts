@@ -1,16 +1,4 @@
-import {
-  BadRequestException,
-  Controller,
-  Delete,
-  Get,
-  Param,
-  Post,
-  Res,
-  UseGuards,
-  UsePipes,
-  ValidationPipe
-} from "@nestjs/common";
-import { ValidationError } from "class-validator";
+import { Controller, Delete, Get, Param, Post, Res, UseGuards } from "@nestjs/common";
 import { Response } from "express";
 
 import { AuthGuard } from "../../auth/auth.guard";
@@ -22,15 +10,6 @@ import { SubscriptionsKitchenInfo, SubscriptionsUserInfo } from "./types";
 import { ApiSubscriptionsService } from "./api-subscriptions.service";
 
 @Controller("/subscriptions")
-@UsePipes(
-  new ValidationPipe({
-    exceptionFactory: (errors: ValidationError[]): Error => {
-      throw new BadRequestException(
-        errors.map(({ constraints }: ValidationError) => Object.values(constraints).join(", ")).join(", ")
-      );
-    }
-  })
-)
 export class ApiSubscriptionsController {
   constructor(private readonly apiSubscriptionsService: ApiSubscriptionsService) {}
 

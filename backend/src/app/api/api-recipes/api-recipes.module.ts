@@ -7,13 +7,12 @@ import { RecipeEventsModule } from "../../common/repositories/recipe-events/reci
 import { SearchModule } from "../../search/search.module";
 
 import { ApiRecipesController } from "./api-recipes.controller";
-import { ApiRecipesMapper } from "./api-recipes.mapper";
 import { ApiRecipesService } from "./api-recipes.service";
 import { SearchRecipeService } from "./search-recipe.service";
 
 @Module({
   imports: [RecipesModule, AuthModule, UsersModule, RecipeEventsModule, SearchModule],
-  providers: [ApiRecipesMapper, ApiRecipesService, SearchRecipeService],
+  providers: [ApiRecipesService, SearchRecipeService],
   controllers: [ApiRecipesController],
   exports: []
 })
