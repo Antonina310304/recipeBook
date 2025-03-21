@@ -10,6 +10,7 @@ import { ApiUsersModule } from "./app/api/api-users/api-users.module";
 import { ConfigModule } from "./app/common/config/config.module";
 import { ConfigService } from "./app/common/config/config.service";
 import { ApiAuthModule } from "./app/api/api-auth/api-auth.module";
+import { ApiGuideModule } from "./app/api/api-guide/api-guide.module";
 import { ApiSubscriptionsModule } from "./app/api/api-subscriptions/api-subscriptions.module";
 
 @Module({
@@ -52,9 +53,10 @@ import { ApiSubscriptionsModule } from "./app/api/api-subscriptions/api-subscrip
     ApiRecipesModule,
     ApiUsersModule,
     ApiAuthModule,
-    ApiSubscriptionsModule
+    ApiSubscriptionsModule,
+    ApiGuideModule
   ],
   controllers: [],
-  providers: []
+  providers: [ApiRecipesModule]
 })
 export class AppModule {}

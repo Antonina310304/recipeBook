@@ -1,10 +1,3 @@
-export interface BaseConditionList {
-  // количество элементов для выборки
-  take: number;
-  // выбранная страница
-  page: number;
-}
-
 export interface DateInterval {
   since?: string;
   until?: string;
@@ -12,4 +5,8 @@ export interface DateInterval {
 
 export interface UserInterface {
   email: string;
+}
+export interface CommonPageCondition {
+  offset?: number;
+  pageSize?: number;
 }
