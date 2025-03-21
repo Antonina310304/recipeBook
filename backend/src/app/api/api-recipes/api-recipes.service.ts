@@ -11,6 +11,7 @@ import { UsersEntity } from "../../common/entities/users.entity";
 import { UsersRepository } from "../../common/repositories/users/users.repository";
 import { PageDtoType } from "../../common/dto/page-dto/page-dto.type";
 import { PageDtoBuilder } from "../../common/dto/page-dto/page-dto.builder";
+import { RecipeEventsRepository } from "../../common/repositories/recipe-events/recipe-events.repository";
 
 import { CreateRecipeData, IngredientsData, RecipesResponseDto } from "./dto/response.dto";
 import { RequestRecipeDto } from "./dto/request.dto";
@@ -150,8 +151,11 @@ export class ApiRecipesService {
     await this.entityManager.transaction(async (entityManager) => {
       const recipesRepository: RecipesRepository = new RecipesRepository(entityManager);
       const ingredientsRepository: IngredientsRepository = new IngredientsRepository(entityManager);
+      const recipeEventsRepository: RecipeEventsRepository = new RecipeEventsRepository(entityManager);
+
       const responseEntity: RecipesEntity = await recipesRepository.save(entity);
       await this.saveIngredients(responseEntity.uuid, recipe.products, ingredientsRepository);
+      await recipeEventsRepository.save({ recipeUuid: responseEntity.uuid });
     });
 
     return entity;
