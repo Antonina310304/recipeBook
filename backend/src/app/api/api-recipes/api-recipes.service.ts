@@ -11,6 +11,7 @@ import { UsersEntity } from "../../common/entities/users.entity";
 import { UsersRepository } from "../../common/repositories/users/users.repository";
 import { PageDtoType } from "../../common/dto/page-dto/page-dto.type";
 import { PageDtoBuilder } from "../../common/dto/page-dto/page-dto.builder";
+import { RecipeEventsRepository } from "../../common/repositories/recipe-events/recipe-events.repository";
 
 import { CreateRecipeData, IngredientsData, RecipesResponseDto } from "./dto/response.dto";
 import { RequestRecipeDto } from "./dto/request.dto";
