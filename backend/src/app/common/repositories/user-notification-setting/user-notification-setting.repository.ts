@@ -12,4 +12,12 @@ export class UserNotificationSettingRepository extends Repository<UserNotificati
   constructor(manager: EntityManager) {
     super(UserNotificationSettingEntity, manager);
   }
+
+  async findByUuid(userUuid: string): Promise<UserNotificationSettingEntity[]> {
+    return await this.find({
+      where: {
+        userUuid
+      }
+    });
+  }
 }

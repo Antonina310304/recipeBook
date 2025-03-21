@@ -1,6 +1,6 @@
 import { Column, Entity, PrimaryColumn } from "typeorm";
 
-@Entity({ name: "users" })
+@Entity({ name: "portal_message" })
 export class PortalMessageEntity {
   @PrimaryColumn({ name: "user_uuid", type: "uuid", nullable: false })
   readonly userUuid: string;
