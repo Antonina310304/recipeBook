@@ -1,7 +1,7 @@
-import { Column, Entity, PrimaryColumn } from "typeorm";
+import { BaseEntity, Column, Entity, PrimaryColumn } from "typeorm";
 
 @Entity({ name: "recipes" })
-export class RecipesEntity {
+export class RecipesEntity extends BaseEntity {
   @PrimaryColumn({ name: "uuid", type: "uuid", nullable: false })
   readonly uuid: string;
 
