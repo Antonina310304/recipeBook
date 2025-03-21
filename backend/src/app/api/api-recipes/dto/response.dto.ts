@@ -1,15 +1,16 @@
 import { IsArray, IsDefined, IsNumber, IsString } from "class-validator";
 
-export interface IngredientsInterface {
+export interface IngredientsResponseDto {
   productUuid: string;
   count: number;
 }
-export interface RecipeListInterface {
+
+export interface RecipesResponseDto {
   title: string;
   description: string;
   kitchenUuid: string;
   dateCreate: string;
-  products: IngredientsInterface[];
+  products: IngredientsResponseDto[];
   uuid: string;
   authorNickname: string;
   authorUuid: string;
