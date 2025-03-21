@@ -1,5 +1,6 @@
 export interface EmailSendInterface {
   email: string;
-  message: string;
+  template: string;
+  context: Record<string, string>;
   subject: string;
 }

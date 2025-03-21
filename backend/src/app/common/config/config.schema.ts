@@ -1,6 +1,6 @@
 import { Type } from "class-transformer";
 import { IsDefined, IsEnum, IsInt, IsNotEmpty, IsNumber, IsPositive, IsString, ValidateNested } from "class-validator";
-
+import { Algorithm } from "jsonwebtoken";
 export enum DatabaseType {
   POSTGRES = "postgres"
 }
@@ -32,21 +32,25 @@ export class DatabaseConfig {
   readonly password: string = "";
 }
 
-export class MailConfig {
+export class OutcomeKeyConfig {
   @IsDefined()
   @IsString()
-  @IsNotEmpty()
-  readonly host: string;
+  readonly url: string;
 
   @IsDefined()
   @IsString()
-  @IsNotEmpty()
-  readonly user: string;
+  readonly issuer: string;
 
   @IsDefined()
   @IsString()
-  @IsNotEmpty()
-  readonly password: string;
+  readonly secret: string;
+
+  @IsDefined()
+  @IsString()
+  readonly audience: string;
+
+  @IsString()
+  readonly algorithm?: Algorithm;
 }
 
 export class ApplicationConfig {
@@ -57,8 +61,8 @@ export class ApplicationConfig {
 
   @IsDefined()
   @ValidateNested()
-  @Type(() => MailConfig)
-  readonly mailerConfig: MailConfig;
+  @Type(() => OutcomeKeyConfig)
+  readonly keysForOutcomingRequests: OutcomeKeyConfig;
 
   @IsDefined()
   @IsNumber()

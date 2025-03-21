@@ -6,11 +6,14 @@ import { plainToClass } from "class-transformer";
 import { validateSync, ValidationError } from "class-validator";
 import { EventEmitter2 } from "eventemitter2";
 import { load } from "js-yaml";
-import { sign } from "jsonwebtoken";
 
-import { SubRequestInterface } from "../../mailing/types";
-
-import { ApplicationConfig, DatabaseConfig, OutcomeKeyConfig } from "./config.schema";
+import {
+  ApplicationConfig,
+  CronConfig,
+  DatabaseConfig,
+  KeysForIncomingRequestsConfig,
+  MailConfig
+} from "./config.schema";
 
 @Injectable()
 export class ConfigService implements ApplicationConfig {
@@ -27,37 +30,24 @@ export class ConfigService implements ApplicationConfig {
     return this.config.database;
   }
 
-  get timeLifeAuthCode(): number {
-    return this.config.timeLifeAuthCode;
+  get getEmail(): string {
+    return this.config.mailerConfig.user;
   }
 
-  get accessSecret(): string {
-    return this.config.accessSecret;
+  get mailerConfig(): MailConfig {
+    return this.config.mailerConfig;
   }
 
-  get timeLifeAccessToken(): number {
-    return this.config.timeLifeAccessToken;
+  get cron(): CronConfig {
+    return this.config.cron;
   }
 
-  get timeLifeRefreshToken(): number {
-    return this.config.timeLifeRefreshToken;
+  get site(): string {
+    return this.config.site;
   }
 
-  get keysForOutcomingRequests(): OutcomeKeyConfig {
-    return this.config.keysForOutcomingRequests;
-  }
-
-  getToken(sub: SubRequestInterface): string {
-    const config: OutcomeKeyConfig = this.config.keysForOutcomingRequests;
-    return sign(
-      {
-        iss: config.issuer,
-        aud: config.audience,
-        sub
-      },
-      config.secret,
-      { algorithm: config.algorithm }
-    );
+  get keysForIncomingRequests(): KeysForIncomingRequestsConfig {
+    return this.config.keysForIncomingRequests;
   }
 
   private loadConfig(): void {
