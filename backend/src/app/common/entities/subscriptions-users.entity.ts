@@ -5,6 +5,6 @@ export class SubscriptionsUsersEntity {
   @PrimaryColumn({ name: "user_uuid", type: "uuid", nullable: false })
   readonly userUuid: string;
 
-  @Column({ name: "kitchen_uuid", type: "uuid", nullable: false })
-  readonly kitchenUuid: string;
+  @Column({ name: "subscription_user_uuid", type: "uuid", nullable: false })
+  readonly subscriptionUserUuid: string;
 }
