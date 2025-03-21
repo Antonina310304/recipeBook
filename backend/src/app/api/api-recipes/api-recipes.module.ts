@@ -4,13 +4,15 @@ import { RecipesModule } from "../../common/repositories/recipes/recipes.module"
 import { AuthModule } from "../../auth/auth.module";
 import { UsersModule } from "../../common/repositories/users/users.module";
 import { RecipeEventsModule } from "../../common/repositories/recipe-events/recipe-events.module";
+import { SearchModule } from "../../search/search.module";
 
 import { ApiRecipesController } from "./api-recipes.controller";
 import { ApiRecipesService } from "./api-recipes.service";
+import { SearchRecipeService } from "./search-recipe.service";
 
 @Module({
-  imports: [RecipesModule, AuthModule, UsersModule, RecipeEventsModule],
-  providers: [ApiRecipesService],
+  imports: [RecipesModule, AuthModule, UsersModule, RecipeEventsModule, SearchModule],
+  providers: [ApiRecipesService, SearchRecipeService],
   controllers: [ApiRecipesController],
   exports: []
 })

@@ -15,10 +15,25 @@ import { ApiRecipesService } from "./api-recipes.service";
 import { RequestRecipeDto } from "./dto/request.dto";
 import { CreateRecipeData, RecipesResponseDto } from "./dto/response.dto";
 import { PAGE_SIZE } from "./constants";
+import { CreateRecipeData, RecipeListInterface } from "./types";
+
+import { SearchRecipeService } from "./search-recipe.service";
 
 @Controller("recipes")
 export class ApiRecipesController {
-  constructor(private readonly apiRecipesService: ApiRecipesService) {}
+  constructor(
+    private readonly apiRecipesService: ApiRecipesService,
+    private readonly searchRecipeService: SearchRecipeService
+  ) {}
+
+  @Get("search")
+  async search(
+    @Query("q") query: string,
+    @Res() response: Response<RecipeListInterface[] | ErrorDescription>
+  ): Promise<void> {
+    const responseData: RecipeListInterface[] = await this.searchRecipeService.search(query);
+    response.status(200).send(responseData);
+  }
 
   @Get()
   async findMany(

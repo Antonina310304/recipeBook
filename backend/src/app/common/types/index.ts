@@ -10,3 +10,9 @@ export interface CommonPageCondition {
   offset?: number;
   pageSize?: number;
 }
+
+export enum RecipeSearchEventType {
+  CREATE = "CREATE",
+  UPDATE = "UPDATE",
+  REMOVE = "REMOVE"
+}

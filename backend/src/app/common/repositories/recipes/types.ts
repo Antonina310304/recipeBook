@@ -19,7 +19,10 @@ export interface RecipesResponseInterface {
   title: string;
   description: string;
   kitchenUuid: string;
-  productUuid: string;
+  products: {
+    count: number;
+    productUuid: string;
+  }[];
   dateCreate: string;
   count: number;
   uuid: string;

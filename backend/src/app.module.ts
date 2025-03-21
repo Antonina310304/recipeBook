@@ -11,6 +11,8 @@ import { ApiAuthModule } from "./app/api/api-auth/api-auth.module";
 import { ApiGuideModule } from "./app/api/api-guide/api-guide.module";
 import { ApiSubscriptionsModule } from "./app/api/api-subscriptions/api-subscriptions.module";
 import { ApiNotificationsModule } from "./app/api/api-notifications/api-notifications.module";
+import { MailingModule } from "./app/mailing/mailing.module";
+import { SchedulerModule } from "./app/scheduler/scheduler.module";
 
 @Module({
   imports: [
@@ -20,7 +22,7 @@ import { ApiNotificationsModule } from "./app/api/api-notifications/api-notifica
       inject: [ConfigService],
       useFactory(config: ConfigService): TypeOrmModuleOptions {
         return {
-          type: "postgres",
+          type: config.database.type,
           host: config.database.host,
           port: config.database.port,
           username: config.database.username,
@@ -39,7 +41,9 @@ import { ApiNotificationsModule } from "./app/api/api-notifications/api-notifica
     ApiAuthModule,
     ApiSubscriptionsModule,
     ApiGuideModule,
-    ApiNotificationsModule
+    ApiNotificationsModule,
+    MailingModule,
+    SchedulerModule
   ],
   controllers: [],
   providers: [ApiRecipesModule]

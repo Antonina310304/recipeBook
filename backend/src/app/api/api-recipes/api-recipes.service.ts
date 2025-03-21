@@ -12,7 +12,8 @@ import { UsersRepository } from "../../common/repositories/users/users.repositor
 import { PageDtoType } from "../../common/dto/page-dto/page-dto.type";
 import { PageDtoBuilder } from "../../common/dto/page-dto/page-dto.builder";
 import { RecipeEventsRepository } from "../../common/repositories/recipe-events/recipe-events.repository";
-
+import { RecipeSearchEventsRepository } from "../../common/repositories/recipe-search-events/recipe-search-events.repository";
+import { RecipeSearchEventType } from "../../common/types";
 import { CreateRecipeData, IngredientsData, RecipesResponseDto } from "./dto/response.dto";
 import { RequestRecipeDto } from "./dto/request.dto";
 
@@ -61,13 +62,20 @@ export class ApiRecipesService {
     });
   }
 
-  async getRecipe(uuid: string): Promise<RecipesResponseDto> {
-    const recipeEntity: RecipesResponseDto | undefined = await this.recipesRepository.findByUuid(uuid);
-    if (!recipeEntity) {
-      throw new NotFoundException(uuid);
-    }
+  async getRecipe(uuid: string): Promise<RecipeListInterface> {
+    const entity: RecipesResponseInterface[] = await this.recipesRepository.findByUuids([uuid]);
 
-    return recipeEntity;
+    if (!entity.length) {
+      // todo подумать над ошибками
+      throw new NotFoundException({
+        uuid,
+        message: "uuid not found",
+        error: "Not Found",
+        statusCode: 404
+      });
+    }
+    // тут мы точно знает, что будет только 1 элемент
+    return entity[0];
   }
 
   async saveIngredients(
@@ -92,6 +100,9 @@ export class ApiRecipesService {
     const user: UsersEntity = await this.usersRepository.findByCondition({ userEmail });
     await this.entityManager.transaction(async (entityManager) => {
       const recipesRepository: RecipesRepository = new RecipesRepository(entityManager);
+      const recipeSearchEventsRepository: RecipeSearchEventsRepository = new RecipeSearchEventsRepository(
+        entityManager
+      );
 
       await recipesRepository.updateByEntity({
         uuid: recipeUuid,
@@ -105,33 +116,38 @@ export class ApiRecipesService {
       const ingredientsRepository: IngredientsRepository = new IngredientsRepository(entityManager);
       await ingredientsRepository.removeByRecipe([recipeUuid]);
       await this.saveIngredients(recipeUuid, recipe.products, ingredientsRepository);
+      await recipeSearchEventsRepository.save({ recipeUuid: recipeUuid, eventType: RecipeSearchEventType.UPDATE });
     });
   }
 
   async checkByAuthor(recipeUuid: string, userEmail: string, message: string): Promise<void> {
-    const recipeEntity: RecipesResponseDto | undefined = await this.recipesRepository.findByUuid(recipeUuid);
-    if (!recipeEntity) {
+    const recipeEntity: RecipesResponseDto[] | undefined = await this.recipesRepository.findByUuids([recipeUuid]);
+    if (!recipeEntity.length) {
       throw new NotFoundException(recipeUuid);
     }
 
     const user: UsersEntity = await this.usersRepository.findByCondition({ userEmail });
-    if (recipeEntity.authorUuid !== user.uuid) {
+    if (recipeEntity[0].authorUuid !== user.uuid) {
       throw new ConflictException(message);
     }
   }
 
   async removeRecipeByUuid(recipeUuid: string): Promise<RecipesResponseDto> {
-    const recipeEntity: RecipesResponseDto = await this.recipesRepository.findByUuid(recipeUuid);
-    if (!recipeEntity) {
+    const recipeData: RecipesResponseDto[] = await this.recipesRepository.findByUuids([recipeUuid])
+    if (!recipeData.length) {
       throw new NotFoundException(recipeUuid);
     }
 
     await this.entityManager.transaction(async (entityManager) => {
       const recipesRepository: RecipesRepository = new RecipesRepository(entityManager);
       const ingredientsRepository: IngredientsRepository = new IngredientsRepository(entityManager);
+      const recipeSearchEventsRepository: RecipeSearchEventsRepository = new RecipeSearchEventsRepository(
+        entityManager
+      );
 
       await ingredientsRepository.removeByRecipe([recipeUuid]);
       await recipesRepository.removeByUuid(recipeUuid);
+      await recipeSearchEventsRepository.save({ recipeUuid: recipeUuid, eventType: RecipeSearchEventType.REMOVE });
     });
 
     return recipeEntity;
@@ -152,10 +168,15 @@ export class ApiRecipesService {
       const recipesRepository: RecipesRepository = new RecipesRepository(entityManager);
       const ingredientsRepository: IngredientsRepository = new IngredientsRepository(entityManager);
       const recipeEventsRepository: RecipeEventsRepository = new RecipeEventsRepository(entityManager);
+      const recipeSearchEventsRepository: RecipeSearchEventsRepository = new RecipeSearchEventsRepository(
+        entityManager
+      );
 
       const responseEntity: RecipesEntity = await recipesRepository.save(entity);
       await this.saveIngredients(responseEntity.uuid, recipe.products, ingredientsRepository);
       await recipeEventsRepository.save({ recipeUuid: responseEntity.uuid });
+      await recipeSearchEventsRepository.save({ recipeUuid: responseEntity.uuid, eventType: RecipeSearchEventType.CREATE });
+
     });
 
     return entity;

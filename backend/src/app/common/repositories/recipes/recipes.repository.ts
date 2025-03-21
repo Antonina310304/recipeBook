@@ -33,7 +33,7 @@ export class RecipesRepository extends Repository<RecipesEntity> {
     `);
   }
 
-  async findByUuid(recipeUuid: string): Promise<RecipesResponseDto | undefined> {
+  async findByUuid(recipeUuid: string[]): Promise<RecipesResponseDto | undefined> {
     const response: RecipesResponseDto[] = await this.findByCondition({ recipeUuid });
     return response[0];
   }

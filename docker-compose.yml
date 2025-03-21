@@ -52,8 +52,15 @@ services:
       - sh
       - -c
       - |
-        cd scheduler
+        cd mailing
         npm i
         npm run start:dev
     ports:
       - 3001:3001
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.22
+    container_name: elasticsearch
+    environment:
+      - discovery.type=single-node
+    ports:
+      - "9200:9200"

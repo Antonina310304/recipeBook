@@ -1,8 +1,24 @@
 import { Type } from "class-transformer";
-import { IsDefined, IsEnum, IsInt, IsNotEmpty, IsNumber, IsPositive, IsString, ValidateNested } from "class-validator";
+import {
+  IsArray,
+  IsBoolean,
+  IsDefined,
+  IsEnum,
+  IsInt,
+  IsNotEmpty,
+  IsNumber,
+  IsPositive,
+  IsString,
+  ValidateNested
+} from "class-validator";
 import { Algorithm } from "jsonwebtoken";
 export enum DatabaseType {
-  POSTGRES = "postgres"
+  postgres = "postgres",
+  mysql = "mysql"
+}
+
+export enum KeyElasticSearchType {
+  COMMON = "common"
 }
 
 export class DatabaseConfig {
@@ -30,6 +46,62 @@ export class DatabaseConfig {
   @IsString()
   @IsDefined()
   readonly password: string = "";
+}
+
+export class AuthElasticSearch {
+  @IsString()
+  @IsNotEmpty()
+  userName: string;
+
+  @IsString()
+  @IsNotEmpty()
+  password: string;
+}
+
+export class IndexElasticSearch {
+  @IsString()
+  @IsDefined()
+  key: string;
+
+  @IsString()
+  @IsDefined()
+  name: KeyElasticSearchType;
+
+  @IsString()
+  @IsDefined()
+  updateTime: string;
+}
+
+export class ElasticSearchConfig {
+  @IsDefined()
+  @IsString()
+  readonly url: string;
+
+  @IsDefined()
+  @IsNumber()
+  readonly maxRetries: number;
+
+  @IsDefined()
+  @IsNumber()
+  readonly requestTimeout: number;
+
+  @IsDefined()
+  @IsNumber()
+  readonly pingTimeout: number;
+
+  @IsDefined()
+  @IsBoolean()
+  readonly sniffOnStart: boolean;
+
+  @IsDefined()
+  @Type(() => AuthElasticSearch)
+  readonly auth: AuthElasticSearch;
+
+  @IsDefined()
+  @IsArray()
+  @ValidateNested({ each: true })
+  @Type(() => IndexElasticSearch)
+  readonly indexes: IndexElasticSearch[];
 }
 
 export class OutcomeKeyConfig {
@@ -63,6 +135,11 @@ export class ApplicationConfig {
   @ValidateNested()
   @Type(() => OutcomeKeyConfig)
   readonly keysForOutcomingRequests: OutcomeKeyConfig;
+
+  @IsDefined()
+  @ValidateNested()
+  @Type(() => ElasticSearchConfig)
+  readonly elasticSearch: ElasticSearchConfig;
 
   @IsDefined()
   @IsNumber()

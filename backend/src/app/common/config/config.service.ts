@@ -10,7 +10,7 @@ import { sign } from "jsonwebtoken";
 
 import { SubRequestInterface } from "../../mailing/types";
 
-import { ApplicationConfig, DatabaseConfig, OutcomeKeyConfig } from "./config.schema";
+import { ApplicationConfig, DatabaseConfig, ElasticSearchConfig, OutcomeKeyConfig } from "./config.schema";
 
 @Injectable()
 export class ConfigService implements ApplicationConfig {
@@ -45,6 +45,10 @@ export class ConfigService implements ApplicationConfig {
 
   get keysForOutcomingRequests(): OutcomeKeyConfig {
     return this.config.keysForOutcomingRequests;
+  }
+
+  get elasticSearch(): ElasticSearchConfig {
+    return this.config.elasticSearch;
   }
 
   getToken(sub: SubRequestInterface): string {
