@@ -31,4 +31,12 @@ export class KitchensRepository extends Repository<KitchensEntity> {
   async getItemCount(): Promise<number> {
     return this.createQueryBuilder("k").getCount();
   }
+
+  async findByUuid(uuid: string): Promise<KitchensEntity | undefined> {
+    return await this.findOne({
+      where: {
+        uuid
+      }
+    });
+  }
 }
